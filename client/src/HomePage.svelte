@@ -1,14 +1,21 @@
 <script>
   import * as Utils from './lib/utils.js';
   import Footer from './components/Footer.svelte';
+  import Magazine from './components/Magazine.svelte';
   let latestMagazine = null;
   let carouselMagazines = [];
 
   async function getMagazines() {
     try {
-      const allMagazines = await Utils.httpGet('/magazines', { json: true });
-      console.log(allMagazines);
+      const result = await Utils.httpGet('/magazines', { json: true });
+
+      if (!result.success) throw new Error(`Couldn't get the magazines.`);
+
+      result.magazines.sort((a, b) => b.index - a.index);
+      latestMagazine = result.magazines[0];
+      carouselMagazines = result.magazines.slice(1);
     } catch (ex) {
+      //TODO: Show a modal box to the client.
       console.trace(ex);
     }
   }
@@ -29,10 +36,11 @@
     height: 210px;
     width: 426px;
     margin: 70px auto 0 auto;
+    padding-top: 15px;
   }
 
   .row-1 {
-    background-image: url(/images/wall-bookshelf-first.png);
+    background-image: url(/images/first-shelf.png);
   }
 
   .row-2 {
@@ -105,13 +113,16 @@
 
   <div class="container">
     <div class="row row-1">
-      {#if latestMagazine}Deneme{/if}
+      {#if latestMagazine}
+        <Magazine {...latestMagazine} />
+      {/if}
     </div>
     <div class="row row-2">
-      {#each carouselMagazines as magazine}Ikinci deneme{/each}
+      {#each carouselMagazines as magazine (magazine.index)}
+        <Magazine {...magazine} />
+      {/each}
     </div>
   </div>
-
 </main>
 
 <Footer />
