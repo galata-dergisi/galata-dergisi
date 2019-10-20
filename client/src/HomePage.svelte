@@ -2,8 +2,9 @@
   import * as Utils from './lib/utils.js';
   import Footer from './components/Footer.svelte';
   import Magazine from './components/Magazine.svelte';
+  import Carousel from './components/Carousel.svelte';
   let latestMagazine = null;
-  let carouselMagazines = [];
+  let carouselInstance;
 
   async function getMagazines() {
     try {
@@ -13,7 +14,8 @@
 
       result.magazines.sort((a, b) => b.index - a.index);
       latestMagazine = result.magazines[0];
-      carouselMagazines = result.magazines.slice(1);
+      const carouselMagazines = result.magazines.slice(1);
+      carouselInstance.setCarouselItems(carouselMagazines);
     } catch (ex) {
       //TODO: Show a modal box to the client.
       console.trace(ex);
@@ -45,6 +47,7 @@
 
   .row-2 {
     background-image: url(/images/wall-bookshelf.png);
+    position: relative;
   }
 
   main {
@@ -118,9 +121,7 @@
       {/if}
     </div>
     <div class="row row-2">
-      {#each carouselMagazines as magazine (magazine.index)}
-        <Magazine {...magazine} />
-      {/each}
+      <Carousel bind:this={carouselInstance} />
     </div>
   </div>
 </main>

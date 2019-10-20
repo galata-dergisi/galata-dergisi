@@ -9,8 +9,10 @@ const pool = mariadb.createPool({
 const router = express.Router();
 
 router.get('/magazines', async (_, res) => {
+  let conn;
+
   try {
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     const rows = await conn.query('SELECT id, publishDateText, numberOfPages, thumbnailURL FROM magazines');
     const result = {
       success: true,
@@ -28,13 +30,14 @@ router.get('/magazines', async (_, res) => {
     }
 
     res.status(200).json(result);
-    conn.release();
   } catch (ex) {
     console.trace(ex);
     res.status(200).json({
       success: false,
       error: 'Someting went wrong.',
     });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
@@ -51,8 +54,10 @@ router.get('/magazines/:magazineIndex/pages/:pageQuery', async (req, res) => {
 
   //Old magazines
   if (magazineIndex <= 36) {
+    let conn;
+
     try {
-      const conn = await pool.getConnection();
+      conn = await pool.getConnection();
       const rows = await conn.query('SELECT `content`, pageNumber FROM `oldassets` WHERE magazineIndex = ? AND pageNumber >= ? AND pageNumber <= ?', [
         +magazineIndex,
         +pageStart,
@@ -68,13 +73,14 @@ router.get('/magazines/:magazineIndex/pages/:pageQuery', async (req, res) => {
       }
 
       res.status(200).json(result);
-      conn.release();
     } catch (ex) {
       console.trace(ex);
       res.status(200).json({
         success: false,
         error: 'Someting went wrong.',
       });
+    } finally {
+      if (conn) conn.release();
     }
   }
 });
