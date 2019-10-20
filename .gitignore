@@ -62,3 +62,4 @@ typings/
 client/public/bundle*
 config.js
 .vscode/
+client/public/images
