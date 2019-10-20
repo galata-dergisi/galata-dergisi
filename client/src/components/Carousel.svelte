@@ -2,15 +2,40 @@
   import { onMount, onDestroy } from 'svelte';
   import Magazine from './Magazine.svelte';
   import Arrow from './Arrow.svelte';
+  /**
+   * Holds Svelte instances of Magazine components
+   * @type {object}
+   */
   const magazineInstances = {};
+
+  /**
+   * @typedef CarouselMagazine
+   * @type {object}
+   * @property {number} index Publish index.
+   * @property {string} publishDateText Date text (e.g. Mart 2018)
+   * @property {number} numberOfPages Number of pages.
+   * @property {string} thumbnailURL Thumbnail URL
+   * @property {boolean} visible Visibility flag.
+   */ 
+
+  /**
+   * @type {CarouselMagazine[]}
+   */
   let carouselMagazines = [];
+
+  //Holds the array index of the left-most visible magazine.
   let firstItemIndex = 0;
+
+  //A boolean flag. Arrow click handlers will stop working when set to true.
   let blockEvents = false;
+
+  //items div will be bound to this variable.
   let itemsElement;
   $: leftArrowDisabled = firstItemIndex === 0;
   $: rightArrowDisabled = firstItemIndex + 3 >= carouselMagazines.length;
 
   function handleTransitionEnd() {
+    //We are unblocking the arrow click handlers when slide transition is over.
     blockEvents = false;
   }
 
@@ -18,12 +43,16 @@
     if (blockEvents) return;
 
     blockEvents = true;
+
+    //Fade out the right-most visible magazine.
     magazineInstances[firstItemIndex + 2].fadeOut();
 
+    //If there is an invisible mag on the left of left-most visible magazine, fade it in
     if (firstItemIndex - 1 >= 0) {
       magazineInstances[firstItemIndex - 1].fadeIn();
     }
 
+    //Svelte will update the translateX style and CSS transition will occur.
     --firstItemIndex;
   }
 
@@ -31,17 +60,21 @@
     if (blockEvents) return;
 
     blockEvents = true;
+    //Fade out the left-most visible magazine.
     magazineInstances[firstItemIndex].fadeOut();
     
+    //If there is an invisible mag on the right of right-most visible mag, fade it in
     if (firstItemIndex + 3 < carouselMagazines.length) {
       magazineInstances[firstItemIndex + 3].fadeIn();
     }
 
+    //Svelte will update the translateX style and CSS transition will occur.
     ++firstItemIndex;
   }
 
   export function setCarouselItems(items) {
     for (let i = 0; i < items.length; ++i) {
+      //Only the first 3 items should be visible
       items[i].visible = i >= firstItemIndex && i <= firstItemIndex + 2;
     }
 
