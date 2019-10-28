@@ -32,3 +32,16 @@ export function once(target, eventName, callback) {
 
   target.addEventListener(eventName, handler);
 }
+
+/**
+ * Forces the browser to download the image (and cache it).
+ * @param {string} src Image URL 
+ * @returns {Promise}
+ */
+export function preloadImage(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = resolve;
+    img.src = src;
+  });
+}
