@@ -7,6 +7,12 @@
 
     <title>Galata Dergisi</title>
 
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js');
+      }
+    </script>
+
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400&display=swap" />
     <link rel="stylesheet" href="/global.css" />
