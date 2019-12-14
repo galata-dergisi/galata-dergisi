@@ -3,6 +3,7 @@
   import Footer from './components/Footer.svelte';
   import Magazine from './components/Magazine.svelte';
   import Carousel from './components/Carousel.svelte';
+
   let latestMagazine = null;
   let carouselInstance;
 
@@ -108,6 +109,7 @@
     height: 220px;
     margin: 0 auto;
     background: url(/images/header-logo.jpg);
+    background-position-x: -13px;
   }
 </style>
 
