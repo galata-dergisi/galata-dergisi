@@ -20,8 +20,8 @@
 <script>
   import * as Utils from './lib/utils.js';
   import Footer from './components/Footer.svelte';
-  import Magazine from './components/Magazine.svelte';
   import Carousel from './components/Carousel.svelte';
+  import MagazineThumbnail from './components/MagazineThumbnail.svelte';
 
   let latestMagazine = null;
   let carouselInstance;
@@ -138,11 +138,13 @@
   <div class="container">
     <div class="row row-1">
       {#if latestMagazine}
-        <Magazine {...latestMagazine} />
+        <MagazineThumbnail 
+          {...latestMagazine} />
       {/if}
     </div>
     <div class="row row-2">
-      <Carousel bind:this={carouselInstance} />
+      <Carousel 
+        bind:this={carouselInstance} />
     </div>
   </div>
 </main>

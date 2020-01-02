@@ -19,20 +19,19 @@
 
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import Magazine from './Magazine.svelte';
+  import MagazineThumbnail from './MagazineThumbnail.svelte';
   import Arrow from './Arrow.svelte';
   /**
-   * Holds Svelte instances of Magazine components
+   * Holds Svelte instances of MagazineThumbnail components
    * @type {object}
    */
-  const magazineInstances = {};
+  const magazineThumbnailInstances = {};
 
   /**
    * @typedef CarouselMagazine
    * @type {object}
    * @property {number} index Publish index.
    * @property {string} publishDateText Date text (e.g. Mart 2018)
-   * @property {number} numberOfPages Number of pages.
    * @property {string} thumbnailURL Thumbnail URL
    * @property {boolean} visible Visibility flag.
    */ 
@@ -63,12 +62,12 @@
 
     blockEvents = true;
 
-    //Fade out the right-most visible magazine.
-    magazineInstances[firstItemIndex + 2].fadeOut();
+    //Fade out the right-most visible magazine thumbnail.
+    magazineThumbnailInstances[firstItemIndex + 2].fadeOut();
 
     //If there is an invisible mag on the left of left-most visible magazine, fade it in
     if (firstItemIndex - 1 >= 0) {
-      magazineInstances[firstItemIndex - 1].fadeIn();
+      magazineThumbnailInstances[firstItemIndex - 1].fadeIn();
     }
 
     //Svelte will update the translateX style and CSS transition will occur.
@@ -79,12 +78,12 @@
     if (blockEvents) return;
 
     blockEvents = true;
-    //Fade out the left-most visible magazine.
-    magazineInstances[firstItemIndex].fadeOut();
+    //Fade out the left-most visible magazine thumbnail.
+    magazineThumbnailInstances[firstItemIndex].fadeOut();
     
     //If there is an invisible mag on the right of right-most visible mag, fade it in
     if (firstItemIndex + 3 < carouselMagazines.length) {
-      magazineInstances[firstItemIndex + 3].fadeIn();
+      magazineThumbnailInstances[firstItemIndex + 3].fadeIn();
     }
 
     //Svelte will update the translateX style and CSS transition will occur.
@@ -122,9 +121,10 @@
 
   <div class="items" style="transform: translateX(-{firstItemIndex * 150}px" bind:this={itemsElement}>
     {#each carouselMagazines as magazine, i}
-      <Magazine {...magazine}
+      <MagazineThumbnail {...magazine}
         carouselItem={true} 
-        bind:this={magazineInstances[i]} />
+        on:loadmagazine
+        bind:this={magazineThumbnailInstances[i]} />
     {/each}
   </div>
 
