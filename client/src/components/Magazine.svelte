@@ -1,167 +1,149 @@
- <!-- 
-   Copyright 2020 Mehmet Baker
+<!-- 
+  Copyright 2020 Mehmet Baker
  
-   This file is part of galata-dergisi.
+  This file is part of galata-dergisi.
  
-   galata-dergisi is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
-   galata-dergisi is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
-  -->
+  galata-dergisi is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  galata-dergisi is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
+-->
 
 <script>
   export let index;
-  export let publishDateText;
-  export let numberOfPages;
   export let thumbnailURL;
-  export let visible = true;
-  export let carouselItem = false;
+  export let numberOfPages;
+  export let publishDateText;
+  export let numTableOfContents;
 
-  import { once } from '../lib/utils.js';
-  import { createEventDispatcher, tick } from 'svelte';
+  import { onMount, createEventDispatcher } from "svelte";
+  import { fly } from "svelte/transition";
 
   let magazine;
-  let anchorElement;
-  let loadMagazine = false;
+  let containerElement;
+
+  // First page is shown
+  let moveLeft = true;
+
   const dispatch = createEventDispatcher();
 
-  	// Adds the pages that the book will need
-	function addPage(page, book) {
-		// 	First check if the page is already in the book
-		if (!book.turn('hasPage', page)) {
-			// Create an element for this page
-			const element = jQuery('<div />', {'class': 'page '+((page%2==0) ? 'odd' : 'even'), 'id': 'page-'+page}).html('<i class="loader"></i>');
-			// If not then add the page
-			book.turn('addPage', element, page);
-			// Let's assum that the data is comming from the server and the request takes 1s.
-			setTimeout(function(){
-					element.html('<div class="data">Data for page '+page+'</div>');
-			}, 1000);
-		}
-	}
+  // Adds the pages that the book will need
+  function addPage(page, book) {
+    // 	First check if the page is already in the book
+    if (!book.turn("hasPage", page)) {
+      // Create an element for this page
+      const element = jQuery("<div />", {
+        class: "page " + (page % 2 == 0 ? "odd" : "even"),
+        id: "page-" + page,
+      }).html('<i class="loader"></i>');
+      // If not then add the page
+      book.turn("addPage", element, page);
+      // Let's assum that the data is comming from the server and the request takes 1s.
+      setTimeout(function() {
+        element.html('<div class="data">Data for page ' + page + "</div>");
+      }, 1000);
+    }
+  }
 
-  async function handleClick() {
-    dispatch('beforeloadmagazine', index);
-    console.log('clicked', index);
-
-    loadMagazine = true;
-    await tick();
-
+  onMount(async () => {
     jQuery(magazine).turn({
       acceleration: true,
-			pages: numberOfPages,
-			elevation: 50,
-			gradients: !jQuery.isTouch,
-			when: {
-				turning: function(e, page, view) {
-					// Gets the range of pages that the book needs right now
-					const range = jQuery(this).turn('range', page);
-					// Check if each page is within the book
-					for (page = range[0]; page<=range[1]; page++) 
-						addPage(page, jQuery(this));
-				},
-			}
-		});
+      pages: numberOfPages,
+      elevation: 50,
+      gradients: !jQuery.isTouch,
+      when: {
+        turning: function(e, page, view) {
+          // Gets the range of pages that the book needs right now
+          const range = jQuery(this).turn("range", page);
+          // Check if each page is within the book
+          for (page = range[0]; page <= range[1]; page++) {
+            addPage(page, jQuery(this));
+          }
+        },
+        turned: function(e, page) {
+          moveLeft = page === 1 || page === numberOfPages;
+          console.log(page, numberOfPages, moveLeft);
+        },
+      },
+    });
+  });
+
+  function goToPage(pageNum) {
+
   }
 
-  export function fadeIn() {
-    visible = true;
-    once(anchorElement, 'animationend', () => {
-      anchorElement.classList.remove('fade-in');
-    });
-    anchorElement.classList.add('fade-in');
-  }
-
-  export function fadeOut() {
-    once(anchorElement, 'animationend', () => {
-      visible = false;
-      anchorElement.classList.remove('fade-out');
-    });
-    anchorElement.classList.add('fade-out');
+  function close() {
+    dispatch("unloadmagazine");
   }
 </script>
 
 <style>
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
+  .container {
+    position: absolute !important;
+    top: 25px;
+    z-index: 2;
+    height: 750px;
+    width: 100%;
+    overflow: hidden;
   }
 
-  @keyframes fade-out {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
+  .center {
+    position: absolute;
+    left: calc((100% - 960px) / 2);
   }
 
-  a {
-    display: block;
-    width: 100px;
-    height: 140px;
-    margin: 0 auto;
+  .toolbar {
+    text-align: center;
+    height: 50px;
   }
 
-  a.fade-in {
-    animation: fade-in .3s ease;
+  .material-icons {
+    font-size: 36px;
   }
 
-  a.fade-out {
-    animation: fade-out .3s ease;
+  .magazine {
+    width: 960px;
+    height: 700px;
+    transition: transform 0.5s ease;
   }
 
-  a.carousel-item {
-    margin-right: 50px;
+  .magazine.move-left {
+    transform: translateX(-250px) !important;
   }
-
-  a.hidden {
-    visibility: hidden;
-  }
-
-  div.thumbnail-container {
-    background-size: 100%;
-    width: 100px;
-    height: 140px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,.6);
-    transition: transform .1s;
-  }
-
-  div.thumbnail-container:hover {
-    transform: scale(1.8);
-  }
-
-  
 </style>
 
-<a 
-  href='/#'
-  bind:this={anchorElement}
-  class:fade-in={false}
-  class:fade-out={false}
-  class:hidden={!visible}
-  class:carousel-item={carouselItem}
-  title="{publishDateText} - Sayı {index}"
-  on:click|preventDefault={handleClick}>
-  <div class="thumbnail-container" style="background-image: url({thumbnailURL})" />
-</a>
+<div
+  class="container"
+  in:fly={{ duration: 1000, y: -750 }}
+  out:fly={{ duration: 1000, y: -750 }}
+  on:outroend
+  bind:this={containerElement}>
+  <div class="center">
+    <div class="toolbar">
+      <a
+        href="/#"
+        title="İçindekiler"
+        on:click|preventDefault={() => goToPage(numTableOfContents)}>
+        <i class="material-icons">list</i>
+      </a>
 
-{#if loadMagazine}
-  <div class="magazine" bind:this={magazine}>
-    <img src="{thumbnailURL.replace('thumbnail', 'front')}" alt="{publishDateText} Ön Kapak" />
+      <a href="/#" title="Kapat" on:click|preventDefault={close}>
+        <i class="material-icons">cancel</i>
+      </a>
+    </div>
+
+    <div bind:this={magazine} class:move-left={moveLeft} class="magazine">
+      <img
+        src={thumbnailURL.replace('thumbnail', 'front')}
+        alt="{publishDateText} Ön Kapak" />
+    </div>
   </div>
-{/if}
+</div>

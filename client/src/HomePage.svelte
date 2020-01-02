@@ -21,10 +21,16 @@
   import * as Utils from './lib/utils.js';
   import Footer from './components/Footer.svelte';
   import Carousel from './components/Carousel.svelte';
+  import Magazine from './components/Magazine.svelte';
   import MagazineThumbnail from './components/MagazineThumbnail.svelte';
+  import { fly } from 'svelte/transition';
 
+  const allMagazines = [];
   let latestMagazine = null;
   let carouselInstance;
+
+  let loadedMagazine = null;
+  let loadedmagazineSvelteInstance = null;
 
   async function getMagazines() {
     try {
@@ -32,6 +38,7 @@
 
       if (!result.success) throw new Error(`Couldn't get the magazines.`);
 
+      allMagazines.push(...result.magazines);
       result.magazines.sort((a, b) => b.index - a.index);
       latestMagazine = result.magazines[0];
       const carouselMagazines = result.magazines.slice(1);
@@ -42,6 +49,31 @@
     }
   }
 
+  function unloadMagazine() {
+    if (!loadedmagazineSvelteInstance) return;
+
+    return new Promise((resolve) => {
+      console.log('waiting for the promise to be resolved');
+
+      const removeListener = loadedmagazineSvelteInstance.$on('outroend', () => {
+        loadedmagazineSvelteInstance = null;
+
+        removeListener();
+        resolve();
+        console.log('promise resolved');
+      });
+
+      loadedMagazine = null;
+    });
+  }
+
+  async function loadMagazine(event) {
+    const index = event.detail;
+
+    await unloadMagazine();
+    loadedMagazine = allMagazines.find((magazine) => magazine.index === index);
+  }
+
   getMagazines();
 </script>
 
@@ -49,6 +81,12 @@
   .container {
     width: 100%;
     height: 100%;
+    transition: opacity 1s ease;
+    opacity: 1;
+  }
+
+  .container.hidden {
+    opacity: 0;
   }
 
   .row {
@@ -133,20 +171,34 @@
 </style>
 
 <main>
-  <div class="logo"></div>
+  {#if !loadedMagazine}
+    <div 
+      class="logo"
+      out:fly="{{ duration: 1000, y: -220 }}"
+      in:fly="{{ duration: 1000, y: -220 }}"></div>
+  {/if}
 
-  <div class="container">
+  <div class="container" class:hidden={loadedMagazine}>
     <div class="row row-1">
       {#if latestMagazine}
         <MagazineThumbnail 
+          on:loadmagazine={loadMagazine}
           {...latestMagazine} />
       {/if}
     </div>
     <div class="row row-2">
       <Carousel 
+        on:loadmagazine={loadMagazine}
         bind:this={carouselInstance} />
     </div>
   </div>
 </main>
 
 <Footer />
+
+{#if loadedMagazine}
+  <Magazine 
+    {...loadedMagazine} 
+    on:unloadmagazine={unloadMagazine}
+    bind:this={loadedmagazineSvelteInstance} />
+{/if}
