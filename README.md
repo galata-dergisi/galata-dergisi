@@ -2,7 +2,7 @@
 
 ## License and Copyright
 
-Copyright &copy; 2019 Mehmet Baker
+Copyright &copy; 2020 Mehmet Baker
 
 This file is part of galata-dergisi.
 

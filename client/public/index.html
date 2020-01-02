@@ -1,5 +1,5 @@
  <!-- 
-   Copyright 2019 Mehmet Baker
+   Copyright 2020 Mehmet Baker
  
    This file is part of galata-dergisi.
  
