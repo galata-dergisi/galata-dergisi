@@ -53,14 +53,11 @@
     if (!loadedmagazineSvelteInstance) return;
 
     return new Promise((resolve) => {
-      console.log('waiting for the promise to be resolved');
-
       const removeListener = loadedmagazineSvelteInstance.$on('outroend', () => {
         loadedmagazineSvelteInstance = null;
 
         removeListener();
         resolve();
-        console.log('promise resolved');
       });
 
       loadedMagazine = null;

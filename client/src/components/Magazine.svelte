@@ -30,47 +30,70 @@
   let magazine;
   let containerElement;
 
-  // First page is shown
+  let magazinePageContents = downlaodPageContents();
+  let magazinePageElements = null;
+
+  // First page is shown, apply margin-left in order to align center
   let moveLeft = true;
+
+  // jquery element
+  let magazineInstance = null;
 
   const dispatch = createEventDispatcher();
 
   // Adds the pages that the book will need
-  function addPage(page, book) {
+  async function addPage(page) {
     // 	First check if the page is already in the book
-    if (!book.turn("hasPage", page)) {
+    if (!magazineInstance.turn("hasPage", page)) {
       // Create an element for this page
       const element = jQuery("<div />", {
         class: "page " + (page % 2 == 0 ? "odd" : "even"),
         id: "page-" + page,
       }).html('<i class="loader"></i>');
+
       // If not then add the page
-      book.turn("addPage", element, page);
-      // Let's assum that the data is comming from the server and the request takes 1s.
-      setTimeout(function() {
-        element.html('<div class="data">Data for page ' + page + "</div>");
-      }, 1000);
+      magazineInstance.turn("addPage", element, page);
+
+      try {
+        const pages = await magazinePageContents;
+        element.html(pages[page]);
+      } catch (ex) {
+        element.html(`<div class"load-error">Sayfa yüklenemedi</div>`);
+        console.trace(ex);
+      }
     }
   }
 
+  async function downlaodPageContents() {
+    const response = await fetch(`/magazines/${index}/pages`);      
+    const result = await response.json();
+
+    if (result.success === true) {
+      return result.pages;
+    }
+
+    throw new Error(result.message);      
+  }
+
   onMount(async () => {
-    jQuery(magazine).turn({
+    magazineInstance = jQuery(magazine);
+
+    magazineInstance.turn({
       acceleration: true,
       pages: numberOfPages,
       elevation: 50,
       gradients: !jQuery.isTouch,
       when: {
         turning: function(e, page, view) {
-          // Gets the range of pages that the book needs right now
-          const range = jQuery(this).turn("range", page);
+          // Gets the range of pages that the magazine needs right now
+          const range = magazineInstance.turn("range", page);
           // Check if each page is within the book
           for (page = range[0]; page <= range[1]; page++) {
-            addPage(page, jQuery(this));
+            addPage(page);
           }
         },
         turned: function(e, page) {
           moveLeft = page === 1 || page === numberOfPages;
-          console.log(page, numberOfPages, moveLeft);
         },
       },
     });
