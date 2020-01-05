@@ -22,7 +22,7 @@
   export let thumbnailURL;
   export let numberOfPages;
   export let publishDateText;
-  export let numTableOfContents;
+  export let tableOfContents;
 
   import { onMount, createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
@@ -100,7 +100,7 @@
   });
 
   function goToPage(pageNum) {
-
+    magazineInstance.turn('page', pageNum);
   }
 
   function close() {
@@ -154,7 +154,7 @@
       <a
         href="/#"
         title="İçindekiler"
-        on:click|preventDefault={() => goToPage(numTableOfContents)}>
+        on:click|preventDefault={() => goToPage(tableOfContents)}>
         <i class="material-icons">list</i>
       </a>
 

@@ -25,6 +25,9 @@
   export let visible = true;
   export let carouselItem = false;
 
+  // Just to suppress Svelte's warning
+  export let tableOfContents;
+
   import { once } from '../lib/utils.js';
   import { createEventDispatcher } from 'svelte';
 
