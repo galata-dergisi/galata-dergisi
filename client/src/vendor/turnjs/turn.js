@@ -1025,7 +1025,10 @@ turnMethods = {
 			turn = opts.turn,
 			dd = turn.data();
 
-		e.stopPropagation();
+    e.stopPropagation();
+    
+		const event = $.Event('end');
+		turn.trigger(event);
 
 		if (turned || dd.tpage) {
 
