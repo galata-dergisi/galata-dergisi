@@ -73,7 +73,9 @@ var has3d,
 
 		// Events
 
-		when: null
+		when: null,
+
+		disable3d: false,
 	},
 
 	flipOptions = {
@@ -158,6 +160,7 @@ var has3d,
 	// Returns the traslate value
 
 	translate = function(x, y, use3d) {
+		use3d = !turnOptions.disable3d && use3d;
 		return (has3d && use3d) ? ' translate3d(' + x + 'px,' + y + 'px, 0px) ' : ' translate(' + x + 'px, ' + y + 'px) ';
 	},
 
@@ -243,7 +246,7 @@ turnMethods = {
 
 		var i, data = this.data(), ch = this.children();
 	
-		opts = $.extend({width: this.width(), height: this.height()}, turnOptions, opts);
+		turnOptions = opts = $.extend({width: this.width(), height: this.height()}, turnOptions, opts);
 		data.opts = opts;
 		data.pageObjs = {};
 		data.pages = {};
@@ -1041,7 +1044,6 @@ turnMethods = {
 			turnMethods._removeMv.call(turn, opts.pageMv);
 			turn.turn('update');
 		}
-		
 	},
 	
 	// This event is called in context of flip
@@ -1370,13 +1372,6 @@ flipMethods = {
 			parent = this.parent();
 
 		if (!data.wrapper) {
-
-			var left = this.css('left'),
-				top = this.css('top'),
-				width = this.width(),
-				height = this.height(),
-				size = Math.round(Math.sqrt(Math.pow(width, 2)+Math.pow(height, 2)));
-			
 			data.parent = parent;
 			data.fparent = (data.opts.turn) ? data.opts.turn.data().fparent : $('#turn-fwrappers');
 

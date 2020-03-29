@@ -85,6 +85,7 @@
       gradients: !jQuery.isTouch,
       width: 1000,
       height: 700,
+      disable3d: true,
       when: {
         turning: function(e, page, view) {
           // Gets the range of pages that the magazine needs right now
