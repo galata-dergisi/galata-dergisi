@@ -152,11 +152,11 @@
 	  height:700px;
 	  background:white;
 
-	  -webkit-box-shadow:0 0 20px rgba(0,0,0,0.2);
-	  -moz-box-shadow:0 0 20px rgba(0,0,0,0.2);
-	  -ms-box-shadow:0 0 20px rgba(0,0,0,0.2);
-	  -o-box-shadow:0 0 20px rgba(0,0,0,0.2);
-	  box-shadow:0 0 20px rgba(0,0,0,0.2);
+	  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	  -ms-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	  -o-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	  box-shadow: 0 0 5px rgba(0,0,0,0.2);
   }
 
   .magazine :global(.odd .gradient) {
