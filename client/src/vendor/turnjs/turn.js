@@ -254,6 +254,7 @@ turnMethods = {
 		data.pagePlace = {};
 		data.pageMv = [];
 		data.totalPages = opts.pages || 0;
+		data.shadowElement = null;
 
 		if (opts.when)
 			for (i in opts.when)
@@ -357,9 +358,8 @@ turnMethods = {
 		var data = this.data(),
 			element = data.pageObjs[page];
 
-		if (element)
+		if (element) {
 			if (turnMethods._necessPage.call(this, page)) {
-				
 				if (!data.pageWrap[page]) {
 
 					var pageWidth = (data.display=='double') ? this.width()/2 : this.width(),
@@ -400,7 +400,21 @@ turnMethods = {
 					data.pageObjs[page].remove();
 
 			}
+		}
 
+		// Execute the block in the next event loop (wait for `data.page` to be ready)
+		setTimeout(() => {
+			if (turnOptions.display === 'double' && data.shadowElement === null) {
+				data.shadowElement = document.createElement('div');
+				data.shadowElement.classList.add('shadow');
+
+				if (data.page === 1) {
+					data.shadowElement.classList.add('partial-hidden', 'first');
+				}
+
+				this.append(data.shadowElement);
+			}
+		});
 	},
 
 	// Checks if a page is in memory
@@ -440,6 +454,21 @@ turnMethods = {
 									bind('end', turnMethods._end).
 									bind('flip', turnMethods._flip);
 		}
+
+		if (data.shadowElement !== null) {
+			data.shadowElement.classList.remove('partial-hidden', 'left', 'right', 'first');
+
+			if (page === 1) {
+				data.shadowElement.classList.add('partial-hidden', 'first');
+			} else if (page <= 3) {
+				data.shadowElement.classList.add('partial-hidden', 'left');
+			} else if (page === data.totalPages) {
+				data.shadowElement.classList.add('partial-hidden', 'last');
+			} else if (page >= data.totalPages - 2) {
+				data.shadowElement.classList.add('partial-hidden', 'right');
+			}
+		}
+
 		return data.pages[page];
 	},
 

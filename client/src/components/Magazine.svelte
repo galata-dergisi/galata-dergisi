@@ -98,13 +98,7 @@
         turned: function(e, page) {
           moveLeft = page === 1 || page === numberOfPages;
         },
-        start: function () {
-          console.log('corner activated');
         },
-        end: function () {
-          console.log('corner deactivated');
-        }
-      },
     });
   });
 
@@ -146,8 +140,6 @@
   .magazine {
     width: 960px;
     height: 700px;
-    transition: transform 0.5s ease, box-shadow .5s ease;
-    box-shadow: 0 0 20px #ccc;
   }
 
   .magazine.move-left {
@@ -195,6 +187,25 @@
   	background-image:-ms-linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
   	background-image:-o-linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
   	background-image:linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
+  }
+
+  .magazine :global(.shadow) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    width: 1000px;
+    height: 700px;
+    box-shadow: 0 0 20px #ccc;
+  }
+
+  .magazine :global(.shadow).partial-hidden.first, .magazine :global(.shadow).partial-hidden.left {
+    left: 500px;
+    width: 500px;
+  }
+
+  .magazine :global(.shadow).partial-hidden.right, .magazine :global(.shadow).partial-hidden.last {
+    width: 500px;
   }
 
   .magazine :global(.zoom-in .gradient) {
