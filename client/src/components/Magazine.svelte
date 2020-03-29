@@ -98,7 +98,7 @@
         turned: function(e, page) {
           moveLeft = page === 1 || page === numberOfPages;
         },
-        },
+      },
     });
   });
 
@@ -206,6 +206,14 @@
 
   .magazine :global(.shadow).partial-hidden.right, .magazine :global(.shadow).partial-hidden.last {
     width: 500px;
+  }
+
+  .magazine :global(.page) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
   }
 
   .magazine :global(.zoom-in .gradient) {
