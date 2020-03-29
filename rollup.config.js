@@ -12,7 +12,7 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'client/public/bundle.js'
+		file: 'client/public/bundle.js',
 	},
 	plugins: [
 		svelte({
@@ -20,9 +20,9 @@ export default {
 			dev: !production,
 			// we'll extract any component CSS out into
 			// a separate file — better for performance
-			css: css => {
+			css: (css) => {
 				css.write('client/public/bundle.css');
-			}
+			},
 		}),
 
 		// If you have external dependencies installed from
@@ -32,7 +32,9 @@ export default {
 		// https://github.com/rollup/rollup-plugin-commonjs
 		resolve({
 			browser: true,
-			dedupe: importee => importee === 'svelte' || importee.startsWith('svelte/')
+			dedupe: (importee) => {
+				return importee === 'svelte' || importee.startsWith('svelte/');
+			},
 		}),
 		commonjs(),
 
@@ -42,9 +44,9 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && terser(),
 	],
 	watch: {
-		clearScreen: false
-	}
+		clearScreen: false,
+	},
 };
