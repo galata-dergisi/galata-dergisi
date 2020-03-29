@@ -24,6 +24,9 @@
   export let publishDateText;
   export let tableOfContents;
 
+  // The page which is going to be shown when magazine loads
+  export let landingPage = 1;
+
   import { onMount, createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
 
@@ -33,8 +36,10 @@
   let magazinePageContents = downlaodPageContents();
   let magazinePageElements = null;
 
+  let isLoaded = false;
+
   // First page is shown, apply margin-left in order to align center
-  let moveLeft = true;
+  let moveLeft = landingPage === 1;
 
   // jquery element
   let magazineInstance = null;
@@ -96,18 +101,29 @@
           }
         },
         turned: function(e, page) {
-          moveLeft = page === 1 || page === numberOfPages;
+          if (isLoaded) {
+            moveLeft = page === 1 || page === numberOfPages;
+          }
+
+          window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${page}`);
+
+          isLoaded = true;
         },
       },
     });
+
+    if (landingPage !== 1) {
+      goToPage(landingPage);
+    }
   });
 
-  function goToPage(pageNum) {
+  export function goToPage(pageNum) {
     magazineInstance.turn('page', pageNum);
   }
 
   function close() {
     dispatch("unloadmagazine");
+    window.history.pushState({}, `Galata Dergisi`, `/`);
   }
 </script>
 

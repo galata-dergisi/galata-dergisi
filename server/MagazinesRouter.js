@@ -15,22 +15,54 @@
 // You should have received a copy of the GNU General Public License
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
+const fs = require('fs');
+const path = require('path');
 const { Router } = require('express');
 
 class MagazinesRouter {
   constructor(params) {
     this.databasePool = params.databasePool;
+    this.staticPath = params.staticPath;
+
+    this.cache = {
+      lastModifiedDate: null,
+      fileContent: null,
+    };
+
+    this.indexPath = path.join(this.staticPath, 'index.html');
     this.init();
   }
 
   init() {
     this.router = Router();
     this.router.get('/magazines', (...args) => this.getMagazines(...args));
+    this.router.get(/^\/magazines\/sayi\d+\/\d+/, (...args) => this.serveIndex(...args));
     this.router.get('/magazines/:magazineIndex/pages', (...args) => this.getMagazine(...args));
   }
 
   getRouter() {
     return this.router;
+  }
+
+  /**
+   * Serves index.html
+   * Nginx will takeover serving index.html in production envrionment
+   */
+  async serveIndex(_, res) {
+    try {
+      const stat = await fs.promises.stat(this.indexPath);
+
+      if (stat.mtime !== this.cache.lastModifiedDate) {
+        this.cache.fileContent = await fs.promises.readFile(this.indexPath, 'utf8')
+        this.cache.lastModifiedDate = stat.mtime;
+      }
+
+      res.set('content-type', 'text/html; charset=UTF-8');
+      res.end(this.cache.fileContent);
+    } catch (ex) {
+      console.trace(ex);
+      res.status(500).end('<h1>Internal Server Error</h1>');
+    }
   }
 
   async getMagazines(req, res) {

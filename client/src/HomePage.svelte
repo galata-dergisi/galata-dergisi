@@ -18,19 +18,22 @@
   -->
 
 <script>
+  import { fly } from 'svelte/transition';
+  import { onMount } from 'svelte';
   import * as Utils from './lib/utils.js';
   import Footer from './components/Footer.svelte';
   import Carousel from './components/Carousel.svelte';
   import Magazine from './components/Magazine.svelte';
   import MagazineThumbnail from './components/MagazineThumbnail.svelte';
-  import { fly } from 'svelte/transition';
 
   const allMagazines = [];
   let latestMagazine = null;
   let carouselInstance;
 
+  let landingPage;
   let loadedMagazine = null;
-  let loadedmagazineSvelteInstance = null;
+  let loadedMagazineSvelteInstance = null;
+
 
   async function getMagazines() {
     try {
@@ -50,11 +53,11 @@
   }
 
   function unloadMagazine() {
-    if (!loadedmagazineSvelteInstance) return;
+    if (!loadedMagazineSvelteInstance) return;
 
     return new Promise((resolve) => {
-      const removeListener = loadedmagazineSvelteInstance.$on('outroend', () => {
-        loadedmagazineSvelteInstance = null;
+      const removeListener = loadedMagazineSvelteInstance.$on('outroend', () => {
+        loadedMagazineSvelteInstance = null;
 
         removeListener();
         resolve();
@@ -64,14 +67,37 @@
     });
   }
 
-  async function loadMagazine(event) {
-    const index = event.detail;
+  function onLoadMagazine(event) {
+    loadMagazine(event.detail);
+  }
 
+  async function loadMagazine(index, page = 1) {
     await unloadMagazine();
+
+    landingPage = page;
     loadedMagazine = allMagazines.find((magazine) => magazine.index === index);
   }
 
-  getMagazines();
+  onMount(async () => {
+    // Retrieve list of magazines from server
+    await getMagazines();
+
+    // Check if the URL is targeting a magazine
+    const res = Utils.getMagazineIndexAndPageFromCurrentLocation();
+
+    if (res) {
+      loadMagazine(res.index, res.page);
+    }
+  });
+
+  window.gotoMagazinePage = function (magazineIndex, page) {
+    if (loadedMagazine && loadedMagazine.index === Number(magazineIndex)) {
+      loadedMagazineSvelteInstance.goToPage(Number(page));
+      return;
+    }
+
+    loadMagazine(magazineIndex, page);
+  }
 </script>
 
 <style>
@@ -179,13 +205,13 @@
     <div class="row row-1">
       {#if latestMagazine}
         <MagazineThumbnail 
-          on:loadmagazine={loadMagazine}
+          on:loadmagazine={onLoadMagazine}
           {...latestMagazine} />
       {/if}
     </div>
     <div class="row row-2">
       <Carousel 
-        on:loadmagazine={loadMagazine}
+        on:loadmagazine={onLoadMagazine}
         bind:this={carouselInstance} />
     </div>
   </div>
@@ -196,6 +222,7 @@
 {#if loadedMagazine}
   <Magazine 
     {...loadedMagazine} 
+    {landingPage}
     on:unloadmagazine={unloadMagazine}
-    bind:this={loadedmagazineSvelteInstance} />
+    bind:this={loadedMagazineSvelteInstance} />
 {/if}
