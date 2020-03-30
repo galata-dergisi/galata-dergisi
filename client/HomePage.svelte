@@ -20,7 +20,7 @@
 <script>
   import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
-  import * as Utils from './lib/utils.js';
+  import Utils from './lib/Utils.js';
   import Footer from './components/Footer.svelte';
   import Carousel from './components/Carousel.svelte';
   import Magazine from './components/Magazine.svelte';
@@ -83,7 +83,7 @@
     await getMagazines();
 
     // Check if the URL is targeting a magazine
-    const res = Utils.getMagazineIndexAndPageFromCurrentLocation();
+    const res = Utils.getMagazineIndexAndPageFromURL(location.href);
 
     if (res) {
       loadMagazine(res.index, res.page);

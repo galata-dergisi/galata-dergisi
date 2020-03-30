@@ -29,6 +29,7 @@
 
   import { onMount, createEventDispatcher, onDestroy } from "svelte";
   import { fly } from "svelte/transition";
+  import Utils from '../lib/Utils.js';
 
   let magazine;
   let containerElement;

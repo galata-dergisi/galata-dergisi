@@ -28,7 +28,7 @@
   // Just to suppress Svelte's warning
   export let tableOfContents;
 
-  import { once } from '../lib/utils.js';
+  import Utils from '../lib/Utils.js';
   import { createEventDispatcher } from 'svelte';
 
   let anchorElement;
@@ -40,14 +40,14 @@
 
   export function fadeIn() {
     visible = true;
-    once(anchorElement, 'animationend', () => {
+    Utils.once(anchorElement, 'animationend', () => {
       anchorElement.classList.remove('fade-in');
     });
     anchorElement.classList.add('fade-in');
   }
 
   export function fadeOut() {
-    once(anchorElement, 'animationend', () => {
+    Utils.once(anchorElement, 'animationend', () => {
       visible = false;
       anchorElement.classList.remove('fade-out');
     });
