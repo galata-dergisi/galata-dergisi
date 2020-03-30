@@ -67,7 +67,7 @@ export function getMagazineIndexAndPageFromCurrentLocation() {
   const url = new URL(location.href);
   const matches = url.pathname.match(/^\/magazines\/sayi(\d+)\/(\d+)$/);
 
-  if (matches.length !== 3) {
+  if (!matches || matches.length !== 3) {
     return null;
   }
 

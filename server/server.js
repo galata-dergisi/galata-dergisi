@@ -22,7 +22,7 @@ const compression = require('compression');
 const MagazinesRouter = require('./MagazinesRouter.js');
 
 const PORT = process.env.PORT || 3000;
-const STATIC_PATH = path.join(__dirname, '../client/public');
+const STATIC_PATH = path.join(__dirname, '../public');
 
 const app = express();
 const config = require('../config.js');
@@ -30,7 +30,6 @@ const config = require('../config.js');
 // Initialize MariaDB connection pool
 const pool = mariadb.createPool({
   ...config.db,
-  connectionLimit: 100,
 });
 
 // Initialize magazines router

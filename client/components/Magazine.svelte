@@ -27,7 +27,7 @@
   // The page which is going to be shown when magazine loads
   export let landingPage = 1;
 
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher, onDestroy } from "svelte";
   import { fly } from "svelte/transition";
 
   let magazine;
@@ -62,6 +62,13 @@
       try {
         const pages = await magazinePageContents;
         element.html(pages[page]);
+
+        // Bind a clicks to event handler
+        const anchors = element[0].querySelectorAll('a');
+
+        for (let i = 0; i < anchors.length; ++i) {
+          anchors[i].addEventListener('click', onAnchorClick);
+        }
       } catch (ex) {
         element.html(`<div class"load-error">Sayfa yüklenemedi</div>`);
         console.trace(ex);
@@ -80,6 +87,21 @@
     throw new Error(result.message);      
   }
 
+  function onAnchorClick(e) {
+    console.log(e.target);
+    e.preventDefault();
+  }
+
+  onDestroy(() => {
+    const anchors = magazineInstance.querySelectorAll('a');
+
+    for (let i = 0; i < anchors.length; ++i) {
+      anchors[i].removeListener('click', onAnchorClick);
+    }
+
+    magazineInstance = null;
+  });
+
   onMount(async () => {
     magazineInstance = jQuery(magazine);
 
@@ -95,6 +117,7 @@
         turning: function(e, page, view) {
           // Gets the range of pages that the magazine needs right now
           const range = magazineInstance.turn("range", page);
+
           // Check if each page is within the book
           for (page = range[0]; page <= range[1]; page++) {
             addPage(page);
@@ -104,8 +127,6 @@
           if (isLoaded) {
             moveLeft = page === 1 || page === numberOfPages;
           }
-
-          window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${page}`);
 
           isLoaded = true;
         },
@@ -123,7 +144,6 @@
 
   function close() {
     dispatch("unloadmagazine");
-    window.history.pushState({}, `Galata Dergisi`, `/`);
   }
 </script>
 

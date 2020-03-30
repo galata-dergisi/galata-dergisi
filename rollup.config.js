@@ -1,3 +1,4 @@
+import copy from 'rollup-plugin-copy';
 import svelte from 'rollup-plugin-svelte';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
@@ -7,12 +8,12 @@ import { terser } from 'rollup-plugin-terser';
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-	input: 'client/src/main.js',
+	input: 'client/main.js',
 	output: {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'client/public/bundle.js',
+		file: 'public/bundle.js',
 	},
 	plugins: [
 		svelte({
@@ -21,7 +22,7 @@ export default {
 			// we'll extract any component CSS out into
 			// a separate file — better for performance
 			css: (css) => {
-				css.write('client/public/bundle.css');
+				css.write('public/bundle.css');
 			},
 		}),
 
@@ -45,6 +46,17 @@ export default {
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
 		production && terser(),
+
+		copy({
+			targets: [
+				{ src: 'client/images', dest: 'public' },
+				{ src: 'client/fonts', dest: 'public' },
+				{ src: 'client/index.html', dest: 'public' },
+				{ src: 'client/favicon.png', dest: 'public' },
+				{ src: 'client/global.css', dest: 'public' },
+				{ src: 'client/service-worker.js', dest: 'public' },
+			],
+		}),
 	],
 	watch: {
 		clearScreen: false,
