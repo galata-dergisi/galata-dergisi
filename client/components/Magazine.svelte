@@ -89,18 +89,34 @@
   }
 
   function onAnchorClick(e) {
-    console.log(e.target);
-    e.preventDefault();
+    let { target } = e;
+
+    if (target.nodeName !== 'A') {
+      target = target.closest('a');
+    }
+
+    if (!target) {
+      return;
+    }
+
+    const { href } = target;
+    const indexAndPage = Utils.getMagazineIndexAndPageFromURL(href);
+
+    // `href` is a magazine URL
+    if (indexAndPage !== null) {
+      e.preventDefault();
+      e.stopPropagation();
+      dispatch('loadmagazine', indexAndPage);
+      window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, href);
+    }
   }
 
   onDestroy(() => {
-    const anchors = magazineInstance.querySelectorAll('a');
+    const anchors = magazineInstance[0].querySelectorAll('a');
 
     for (let i = 0; i < anchors.length; ++i) {
-      anchors[i].removeListener('click', onAnchorClick);
+      anchors[i].removeEventListener('click', onAnchorClick);
     }
-
-    magazineInstance = null;
   });
 
   onMount(async () => {

@@ -35,7 +35,7 @@
   const dispatch = createEventDispatcher();
 
   async function handleClick() {
-    dispatch('loadmagazine', index);
+    dispatch('loadmagazine', { index });
   }
 
   export function fadeIn() {

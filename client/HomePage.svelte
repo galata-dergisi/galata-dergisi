@@ -68,10 +68,16 @@
   }
 
   function onLoadMagazine(event) {
-    loadMagazine(event.detail);
+    const { index, page } = event.detail;
+    loadMagazine(index, page);
   }
 
   async function loadMagazine(index, page = 1) {
+    if (loadedMagazine && loadedMagazine.index === index) {
+      loadedMagazineSvelteInstance.goToPage(page);
+      return;
+    }
+
     await unloadMagazine();
 
     landingPage = page;
@@ -91,12 +97,7 @@
   });
 
   window.gotoMagazinePage = function (magazineIndex, page) {
-    if (loadedMagazine && loadedMagazine.index === Number(magazineIndex)) {
-      loadedMagazineSvelteInstance.goToPage(Number(page));
-      return;
-    }
-
-    loadMagazine(magazineIndex, page);
+    loadMagazine(Number(magazineIndex), Number(page));
   }
 </script>
 
