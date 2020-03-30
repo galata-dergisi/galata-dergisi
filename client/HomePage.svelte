@@ -134,7 +134,7 @@
 
   main {
     width: 100%;
-    height: 800px;
+    height: 850px;
     overflow: hidden;
     position: relative;
     box-sizing: border-box;
@@ -199,7 +199,7 @@
     <div 
       class="logo"
       out:fly="{{ duration: 1000, y: -220 }}"
-      in:fly="{{ duration: 1000, y: -220 }}"></div>
+      in:fly="{{ duration: 1000, y: -220, delay: 200 }}"></div>
   {/if}
 
   <div class="container" class:hidden={loadedMagazine}>
@@ -224,6 +224,7 @@
   <Magazine 
     {...loadedMagazine} 
     {landingPage}
+    on:loadmagazine={onLoadMagazine}
     on:unloadmagazine={unloadMagazine}
     bind:this={loadedMagazineSvelteInstance} />
 {/if}

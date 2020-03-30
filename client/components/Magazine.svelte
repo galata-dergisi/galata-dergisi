@@ -161,13 +161,22 @@
 
   function close() {
     dispatch("unloadmagazine");
+    window.history.pushState({}, 'Galata Dergisi', '/');
+  }
+
+  function shareOnFacebook() {
+
+  }
+
+  function shareOnTwitter() {
+
   }
 </script>
 
 <style>
   .container {
     position: absolute !important;
-    top: 25px;
+    top: 90px;
     z-index: 2;
     height: 750px;
     width: 100%;
@@ -182,12 +191,44 @@
   }
 
   .toolbar {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
     text-align: center;
     height: 50px;
   }
 
-  .material-icons {
-    font-size: 36px;
+  .toolbar .wrapper {
+    width: 1000px;
+    margin: 0 auto;
+  }
+
+  .toolbar .left {
+    float: left;
+    padding-left: 425px;
+  }
+
+  .toolbar .left > a, .toolbar .left > span {
+    margin-right: 30px;
+  }
+
+  .toolbar .right {
+    float: right;
+  }
+
+  .toolbar i {
+    color: #7f7f7f;
+  }
+
+  .toolbar i:hover {
+    color: #525252;
+  }
+
+  .toolbar span {
+    display: inline-block;
+    width: 50px;
+    cursor: pointer;
   }
 
   .magazine {
@@ -307,17 +348,49 @@
   }
 </style>
 
-<div class="toolbar">
-  <a
-    href="/#"
-    title="İçindekiler"
-    on:click|preventDefault={() => goToPage(tableOfContents)}>
-    <i class="material-icons">list</i>
-  </a>
+<div 
+  in:fly={{ duration: 300, y: -90, delay: 550 }}
+  out:fly={{ duration: 300, y: -90 }}
+  class="toolbar">
+  <div class="wrapper">
+    <div class="left">
+      <a
+        href="/magazines/sayi{index}/{tableOfContents}"
+        title="İçindekiler"
+        on:click|preventDefault={() => {
+          goToPage(tableOfContents);
+          window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${tableOfContents}`);
+        }}>
+        <i class="fas fa-list-alt fa-2x"></i>
+      </a>
 
-  <a href="/#" title="Kapat" on:click|preventDefault={close}>
-    <i class="material-icons">cancel</i>
-  </a>
+      <span
+        role="button"
+        on:click={shareOnFacebook}
+        title="Facebook'ta Paylaş"
+      >
+        <i class="fab fa-facebook-f fa-2x"></i>
+      </span>
+
+      <span
+        role="button"
+        on:click={shareOnTwitter}
+        title="Twitter'ta Paylaş"
+      >
+        <i class="fab fa-twitter fa-2x"></i>
+      </span>
+    </div>
+
+    <div class="right">
+      <span 
+        role="button"
+        on:click={close}
+        title="Kapat" 
+      >
+        <i class="fas fa-times-circle fa-2x"></i>
+      </span>
+    </div>
+  </div>
 </div>
 
 <div
