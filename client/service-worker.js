@@ -15,12 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
-const CACHE_NAME = 'galatadergisi-cache-v0';
+const CACHE_NAME = 'galatadergisi-cache-v1';
+const networkOnlyList = [
+  /\/magazines\/sayi\d+\/audio\//,
+];
+const networkFirstList = [
+  /\/magazines\/sayi\d+\/pages$/,
+];
 
 async function cleanUpObseleteCaches() {
   try {
     const cacheNames = await caches.keys();
-    return Promise.all(cacheNames.map(cacheName => {
+
+    return Promise.all(cacheNames.map((cacheName) => {
       if (cacheName !== CACHE_NAME) return caches.delete(cacheName);
     }));
   } catch (ex) {
@@ -36,6 +43,11 @@ async function cacheFirst(req) {
     if (response) return response;
 
     const networkResponse = await fetch(req);
+
+    if (!networkResponse || networkResponse.status !== 200) {
+      return networkResponse;
+    }
+
     cache.put(req, networkResponse.clone());
     return networkResponse;
   } catch (ex) {
@@ -43,22 +55,70 @@ async function cacheFirst(req) {
   }
 }
 
-async function networkOnly(req) {
+async function networkFirst(req) {
   try {
     const networkResponse = await fetch(req);
+
+    if (!networkResponse || networkResponse.status !== 200) {
+      const cacheResponse = await caches.match(req);
+
+      if (!cacheResponse) {
+        return new Response(`<h1>Service Worker Couldn't Fetch the Resource</h1><strong>Request failed</strong>`, {
+          headers: {
+            'Content-Type': 'text/html',
+          },
+          status: 499,
+        });
+      }
+
+      return cacheResponse;
+    }
+
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(req, networkResponse.clone());
+
     return networkResponse;
   } catch (ex) {
-    throw ex;
+    const cache = await caches.open(CACHE_NAME);
+    const response = await cache.match(req);
+
+    if (response) {
+      return response;
+    }
+
+    throw new Error('Resource is not available.');
   }
+}
+
+function networkOnly(req) {
+  return fetch(req);  
 }
 
 self.addEventListener('activate', e => e.waitUntil(cleanUpObseleteCaches()));
 
-self.addEventListener('install', () => {
-  console.log('service-worker is installed.');
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE_NAME).then((cache) => {
+    return cache.addAll([
+      '/bundle.css',
+      '/bundle.js',
+      '/favicon.png',
+      '/global.css',
+      '/index.html',
+      '/legacy-player.js',
+      '/fonts/akaDora.ttf',
+      '/fonts/DistTh___.ttf',
+      '/fonts/sanskrit.ttf',
+      '/fonts/Stempel-Garamond-W01-Roman.woff',
+      '/images/bant.jpg',
+      '/images/first-shelf.png',
+      '/images/header-logo.jpg',
+      '/images/wall-bookshelf-first.png',
+      '/images/wall-bookshelf.png',
+    ]);
+  }));
 });
 
-self.addEventListener('fetch', e => {
+self.addEventListener('fetch', (e) => {
   const { origin: currentOrigin } = new URL(location.href);
   const { origin: destinationOrigin } = new URL(e.request.url);
 
@@ -67,5 +127,17 @@ self.addEventListener('fetch', e => {
     return e.respondWith(cacheFirst(e.request));
   }
 
-  e.respondWith(networkOnly(e.request));
+  for (const regex of networkFirstList) {
+    if (regex.test(e.request.url)) {
+      return e.respondWith(networkFirst(e.request));
+    }
+  }
+
+  for (const regex of networkOnlyList) {
+    if (regex.test(e.request.url)) {
+      return e.respondWith(networkOnly(e.request));
+    }
+  }
+
+  e.respondWith(cacheFirst(e.request));
 });
