@@ -34,7 +34,6 @@
   let loadedMagazine = null;
   let loadedMagazineSvelteInstance = null;
 
-
   async function getMagazines() {
     try {
       const result = await Utils.httpGet('/magazines', { json: true });

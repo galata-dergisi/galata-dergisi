@@ -41,7 +41,11 @@
 
   // First page is shown, apply margin-left in order to align center
   let moveLeft = landingPage === 1;
+
   let currentPage;
+  let nextPage;
+  let prevPage;
+  $: setNextAndPrevPage(currentPage);
 
   // jquery element
   let magazineInstance = null;
@@ -75,6 +79,18 @@
         element.html(`<div class"load-error">Sayfa yüklenemedi</div>`);
         console.trace(ex);
       }
+    }
+  }
+
+  function setNextAndPrevPage(currentPage) {
+    // currentPage is even
+    if (currentPage % 2 === 0) {
+      nextPage = Math.min(numberOfPages, currentPage + 2);
+      prevPage = Math.max(1, currentPage - 1);
+    } else {
+      // currentPage is odd
+      nextPage = Math.min(numberOfPages, currentPage + 1);
+      prevPage = Math.max(1, currentPage - 2);
     }
   }
 
@@ -214,29 +230,55 @@
     left: 0;
     right: 0;
     text-align: center;
-    height: 50px;
+    height: 70px;
   }
 
-  .toolbar .wrapper {
+  .toolbar .top {
     width: 1000px;
     margin: 0 auto;
+    height: 32px;
   }
 
-  .toolbar .left {
-    float: left;
-    padding-left: 425px;
+  .toolbar .top {
+    padding-left: 85px;
   }
 
-  .toolbar .left > a, .toolbar .left > span {
+  .toolbar .bottom {
+    position: absolute;
+    width: 1000px;
+    line-height: 38px;
+    left: calc((100% - 960px) / 2);
+    font-size: 32px;
+  }
+
+  .toolbar .bottom.hidden {
+    display: none;
+  }
+
+  .toolbar .top > a, .toolbar .top > span {
     margin-right: 30px;
   }
 
-  .toolbar .right {
+  .toolbar .bottom .left {
+    float: left;
+    padding-left: 20px;
+  }
+
+  .toolbar .bottom .right {
     float: right;
+    padding-right: 20px;
   }
 
   .toolbar i {
     color: #7f7f7f;
+    font-size: 32px;
+  }
+
+  .toolbar .bottom .wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -20px;
   }
 
   .toolbar i:hover {
@@ -339,78 +381,73 @@
   .magazine :global(.zoom-in .next-button, .zoom-in .previous-button) {
     display: none;
   }
-
-  .previous-button,.next-button {
-  	width: 22px;
-  	height: 700px;
-  	position: absolute;
-  	top: 0;
-  }
-
-  .next-button {
-  	right:-22px;
-  	-webkit-border-radius:0 15px 15px 0;
-  	-moz-border-radius:0 15px 15px 0;
-  	-ms-border-radius:0 15px 15px 0;
-  	-o-border-radius:0 15px 15px 0;
-  	border-radius:0 15px 15px 0;
-  }
-
-  .previous-button {
-  	left:-22px;
-  	-webkit-border-radius:15px 0 0 15px;
-  	-moz-border-radius:15px 0 0 15px;
-  	-ms-border-radius:15px 0 0 15px;
-  	-o-border-radius:15px 0 0 15px;
-  	border-radius:15px 0 0 15px;
-  }
-
-  .next-button:hover, .previous-button:hover {
-    background-color:rgba(0,0,0, 0.2);
-  }
 </style>
 
 <div 
   in:fly={{ duration: 300, y: -90, delay: 550 }}
   out:fly={{ duration: 300, y: -90 }}
   class="toolbar">
-  <div class="wrapper">
-    <div class="left">
-      <a
-        href="/magazines/sayi{index}/{tableOfContents}"
-        title="İçindekiler"
-        on:click|preventDefault={() => {
-          goToPage(tableOfContents);
-          window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${tableOfContents}`);
-        }}>
-        <i class="fas fa-list-alt fa-2x"></i>
-      </a>
+  <div class="top">
+    <a
+      href="/magazines/sayi{index}/{tableOfContents}"
+      title="İçindekiler"
+      on:click|preventDefault={() => {
+        goToPage(tableOfContents);
+        window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${tableOfContents}`);
+      }}>
+      <i class="fas fa-list-alt"></i>
+    </a>
 
-      <span
-        role="button"
-        on:click={shareOnFacebook}
-        title="Facebook'ta Paylaş"
-      >
-        <i class="fab fa-facebook-f fa-2x"></i>
-      </span>
+    <span
+      role="button"
+      on:click={shareOnFacebook}
+      title="Facebook'ta Paylaş"
+    >
+      <i class="fab fa-facebook-f"></i>
+    </span>
 
-      <span
-        role="button"
-        on:click={shareOnTwitter}
-        title="Twitter'ta Paylaş"
-      >
-        <i class="fab fa-twitter fa-2x"></i>
-      </span>
-    </div>
+    <span
+      role="button"
+      on:click={shareOnTwitter}
+      title="Twitter'ta Paylaş"
+    >
+      <i class="fab fa-twitter"></i>
+    </span>
 
-    <div class="right">
-      <span 
-        role="button"
-        on:click={close}
-        title="Kapat" 
-      >
-        <i class="fas fa-times-circle fa-2x"></i>
-      </span>
+    <span 
+      role="button"
+      on:click={close}
+      title="Kapat" 
+    >
+      <i class="fas fa-times-circle fa-2x"></i>
+    </span>
+  </div>
+
+  <div class="bottom" class:hidden={moveLeft}>
+    <div class="wrapper">
+      <div class="left">
+        <a 
+          on:click|preventDefault={() => {
+            window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${prevPage}`);
+            goToPage(prevPage);
+          }}
+          href="/magazines/sayi{index}/{prevPage}" 
+          title="Önceki Sayfa">
+          <i class="fas fa-arrow-alt-circle-left" />
+        </a>
+      </div>
+
+      <div class="right">
+        <a 
+          on:click|preventDefault={() => {
+            window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${nextPage}`);
+            goToPage(nextPage);
+          }}
+          href="/magazines/sayi{index}/{nextPage}" 
+          title="Sonraki Sayfa">
+          <i class="fas fa-arrow-alt-circle-right" />
+        </a>
+      </div>
     </div>
   </div>
 </div>
