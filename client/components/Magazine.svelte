@@ -111,6 +111,23 @@
     }
   }
 
+  /**
+   * Makes sure that `page` is ready in turn.js
+   * An attempt to workaround the issue in turn.js:1626
+   */
+  function makeSureOfRange(page) {
+    if (!magazineInstance) return;
+
+    // Gets the range of pages that the magazine needs right now
+    const range = magazineInstance.turn("range", page);
+    currentPage = page;
+
+    // Check if each page is within the book
+    for (page = range[0]; page <= range[1]; page++) {
+      addPage(page);
+    }
+  }
+
   onDestroy(() => {
     const anchors = magazineInstance[0].querySelectorAll('a');
 
@@ -132,13 +149,7 @@
       disable3d: true,
       when: {
         turning: function(e, page, view) {
-          // Gets the range of pages that the magazine needs right now
-          const range = magazineInstance.turn("range", page);
-
-          // Check if each page is within the book
-          for (page = range[0]; page <= range[1]; page++) {
-            addPage(page);
-          }
+          makeSureOfRange(page);
         },
         turned: function(e, page) {
           if (isLoaded) {
@@ -156,6 +167,7 @@
   });
 
   export function goToPage(pageNum) {
+    makeSureOfRange(pageNum);
     magazineInstance.turn('page', pageNum);
   }
 

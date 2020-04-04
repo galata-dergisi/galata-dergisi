@@ -1618,6 +1618,11 @@
       _eventMove: function (e) {
         var data = this.data().f;
 
+        // A major bug in turn.js: sometimes data is undefined
+        if (!data) {
+          window.location.reload();
+        }
+
         if (!data.disabled) {
           e = isTouch ? e.originalEvent.touches : [e];
 
