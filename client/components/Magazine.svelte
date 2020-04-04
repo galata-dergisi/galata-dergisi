@@ -178,11 +178,16 @@
   }
 
   function shareOnFacebook() {
-
+    window.open('https://www.facebook.com/sharer.php?' +
+      'u=' + encodeURIComponent(`https://galatadergisi.org/magazines/sayi${index}/${currentPage}`) +
+      '&t=' + encodeURIComponent(`Galata Dergisi - Sayı ${index} (${publishDateText})`));
   }
 
   function shareOnTwitter() {
+    const url = encodeURIComponent(`https://galatadergisi.org/magazines/sayi${index}/${currentPage}`);
+    const shareText = encodeURIComponent(`Galata Dergisi - Sayı ${index} (${publishDateText})`);
 
+    window.open(`https://twitter.com/intent/tweet?original_referer=${url}&url=${url}&text=${shareText}`);
   }
 </script>
 
