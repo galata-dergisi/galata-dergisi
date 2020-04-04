@@ -158,7 +158,11 @@ function loadStatus() { //Update Tracker Bar and the Current Time
     buffered = duration;
   }
 
-  document.getElementById("tracker_loaded").style.width = parseInt(buffered / duration * 230) + "px";
+  const loaderElement = document.getElementById("tracker_loaded");
+
+  if (!loaderElement) return;
+
+  loaderElement.style.width = parseInt(buffered / duration * 230) + "px";
   current.style.width = (curr / duration * 230) + "px";
   nav.style.left = (curr / duration * 210) + "px";
   pTimer.innerHTML = timeConvert(audCnt.currentTime);
