@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 // Copyright 2020 Mehmet Baker
 // 
 // This file is part of galata-dergisi.
