@@ -41,6 +41,7 @@
 
   // First page is shown, apply margin-left in order to align center
   let moveLeft = landingPage === 1;
+  let currentPage;
 
   // jquery element
   let magazineInstance = null;
@@ -253,6 +254,10 @@
     box-shadow: none;
   }
 
+  .magazine.move-left.last-page {
+    transform: translateX(250px) !important;
+  }
+
   .magazine :global(.page) {
     width:500px;
 	  height:700px;
@@ -412,7 +417,11 @@
   on:outroend
   bind:this={containerElement}>
   <div class="center">
-    <div bind:this={magazine} class:move-left={moveLeft} class="magazine">
+    <div 
+      bind:this={magazine} 
+      class:move-left={moveLeft} 
+      class:last-page={currentPage === numberOfPages} 
+      class="magazine">
       <img
         src={thumbnailURL.replace('thumbnail', 'front')}
         alt="{publishDateText} Ön Kapak" />
