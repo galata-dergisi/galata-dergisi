@@ -38,11 +38,6 @@ const magazinesRouter = new MagazinesRouter({
   staticPath: STATIC_PATH,
 });
 
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - Received a request: ${req.url}`);
-  next();
-});
-
 app.use(compression({ threshold: 0 }));
 app.use(magazinesRouter.getRouter());
 app.use(express.static(STATIC_PATH));

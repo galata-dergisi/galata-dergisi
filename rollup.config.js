@@ -55,6 +55,8 @@ export default {
 				{ src: 'client/favicon.png', dest: 'public' },
 				{ src: 'client/global.css', dest: 'public' },
 				{ src: 'client/service-worker.js', dest: 'public' },
+				{ src: 'client/lib/legacy-player.js', dest: 'public' },
+				{ src: 'client/audio', dest: 'public' },
 			],
 		}),
 	],

@@ -38,6 +38,7 @@ class MagazinesRouter {
     this.router.get('/magazines', (...args) => this.getMagazines(...args));
     this.router.get(/^\/magazines\/sayi\d+\/\d+/, (...args) => this.serveIndex(...args));
     this.router.get('/magazines/:magazineIndex/pages', (...args) => this.getMagazine(...args));
+    this.router.get('/magazines/:magazineIndex/audio/:audioFile', (req, res) => this.serveAudioFiles(req, res));
   }
 
   getRouter() {
@@ -63,6 +64,13 @@ class MagazinesRouter {
       console.trace(ex);
       res.status(500).end('<h1>Internal Server Error</h1>');
     }
+  }
+
+
+  // Serve audio files (Nginx will takeover in production)
+  serveAudioFiles(req, res) {
+    const { magazineIndex, audioFile } = req.params;
+    res.sendFile(path.join(this.staticPath, 'audio', magazineIndex, audioFile));
   }
 
   async getMagazines(req, res) {
