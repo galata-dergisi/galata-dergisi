@@ -41,8 +41,12 @@
       if (!result.success) throw new Error(`Couldn't get the magazines.`);
 
       allMagazines.push(...result.magazines);
+
+      // Sort magazines by index and determine the latest one
       result.magazines.sort((a, b) => b.index - a.index);
       latestMagazine = result.magazines[0];
+
+      // Rest of the magazines will be presented in the carousel slider
       const carouselMagazines = result.magazines.slice(1);
       carouselInstance.setCarouselItems(carouselMagazines);
     } catch (ex) {
@@ -192,6 +196,10 @@
     background-position-x: -13px;
   }
 </style>
+
+<svelte:head>
+  <title>{loadedMagazine ? `Sayı ${loadedMagazine.index} | Galata Dergisi` : 'Galata Dergisi'}</title>
+</svelte:head>
 
 <main>
   {#if !loadedMagazine}
