@@ -66,7 +66,11 @@ export default class Utils {
 
   static getMagazineIndexAndPageFromURL(href) {
     const url = new URL(href);
-    const matches = url.pathname.match(/^\/magazines\/sayi(\d+)\/(\d+)$/);
+
+    const legacyURLRegex = /^#magazines\/sayi(\d+)\/?(\d+)?$/;
+    const matches = legacyURLRegex.test(url.hash)
+      ? url.hash.match(legacyURLRegex)
+      : url.pathname.match(/^\/magazines\/sayi(\d+)\/(\d+)$/);
 
     if (!matches || matches.length !== 3) {
       return null;
@@ -75,7 +79,7 @@ export default class Utils {
     const [, index, page] = matches;
 
     return { 
-      page: Number(page),
+      page: Number(page === undefined ? 1 : page),
       index: Number(index), 
     };
   }
