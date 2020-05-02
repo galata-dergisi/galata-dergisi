@@ -7,6 +7,9 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
     "nodemon": "^2.0.2",
     "npm-run-all": "^4.1.5",
     "rollup": "^1.12.0",
@@ -26,6 +29,7 @@
     "build": "rollup -c",
     "autobuild": "rollup -c -w",
     "dev": "run-p start:dev autobuild",
+    "lint": "eslint \"client/**/*.js\" \"server/**/*.js\"",
     "start": "sirv public --single",
     "start:dev": "nodemon server/server.js"
   },
