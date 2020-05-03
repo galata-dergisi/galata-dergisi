@@ -63,3 +63,5 @@ public/
 config.js
 .vscode/
 /client/audio
+utility-scripts/
+*.sql

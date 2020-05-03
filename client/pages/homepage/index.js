@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
-import './vendor/turnjs/turn.js';
+import '../../vendor/turnjs/turn.js';
 import HomePage from './HomePage.svelte';
 
 const homePage = new HomePage({
