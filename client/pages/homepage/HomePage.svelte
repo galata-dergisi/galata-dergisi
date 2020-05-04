@@ -87,21 +87,28 @@
     loadedMagazine = allMagazines.find((magazine) => magazine.index === index);
   }
 
-  onMount(async () => {
-    // Retrieve list of magazines from server
-    await getMagazines();
-
+  function loadMagazineFromWindowLocation() {
     // Check if the URL is targeting a magazine
     const res = Utils.getMagazineIndexAndPageFromURL(location.href);
 
     if (res) {
       loadMagazine(res.index, res.page);
     }
+  }
+
+  onMount(async () => {
+    // Retrieve list of magazines from server
+    await getMagazines();
+    loadMagazineFromWindowLocation();
   });
 
   window.gotoMagazinePage = function (magazineIndex, page) {
     loadMagazine(Number(magazineIndex), Number(page));
   }
+
+  window.onpopstate = function onPopState(event) {
+    loadMagazineFromWindowLocation();
+  };
 </script>
 
 <style>
