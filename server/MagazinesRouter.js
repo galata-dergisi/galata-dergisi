@@ -35,20 +35,24 @@ class MagazinesRouter {
 
   init() {
     this.router = Router();
+
+    // return list of the magazines
     this.router.get('/magazines', (...args) => this.getMagazines(...args));
-    this.router.get(/^\/magazines\/sayi\d+\/\d+/, (...args) => this.serveIndex(...args));
+
+    // return HTML content of each page
     this.router.get('/magazines/:magazineIndex/pages', (...args) => this.getMagazine(...args));
+
+    // DEV MODE: Serve audio files (nginx will perform this on the server)
     this.router.get('/magazines/:magazineIndex/audio/:audioFile', (req, res) => this.serveAudioFiles(req, res));
+
+    // DEV MODE: Serve individual magazine URLs (nginx will perform this on the server)
+    this.router.get(/^\/magazines\/sayi\d+(?:\/\d+)?/, (...args) => this.serveIndex(...args));
   }
 
   getRouter() {
     return this.router;
   }
 
-  /**
-   * Serves index.html
-   * Nginx will takeover serving index.html in production envrionment
-   */
   async serveIndex(_, res) {
     try {
       const stat = await fs.promises.stat(this.indexPath);
@@ -66,10 +70,9 @@ class MagazinesRouter {
     }
   }
 
-
-  // Serve audio files (Nginx will takeover in production)
   serveAudioFiles(req, res) {
     const { magazineIndex, audioFile } = req.params;
+    console.log('Serving audio file', path.join(this.staticPath, 'audio', magazineIndex, audioFile));
     res.sendFile(path.join(this.staticPath, 'audio', magazineIndex, audioFile));
   }
 
