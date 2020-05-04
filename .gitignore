@@ -65,3 +65,4 @@ config.js
 /client/audio
 utility-scripts/
 *.sql
+sql-backups/
