@@ -124,7 +124,7 @@
       e.preventDefault();
       e.stopPropagation();
       dispatch('loadmagazine', indexAndPage);
-      window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, href);
+      window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, href);
     }
   }
 
@@ -393,7 +393,7 @@
       title="İçindekiler"
       on:click|preventDefault={() => {
         goToPage(tableOfContents);
-        window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${tableOfContents}`);
+        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${tableOfContents}`);
       }}>
       <i class="fas fa-list-alt"></i>
     </a>
@@ -428,7 +428,7 @@
       <div class="left">
         <a 
           on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${prevPage}`);
+            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${prevPage}`);
             goToPage(prevPage);
           }}
           href="/magazines/sayi{index}/{prevPage}" 
@@ -440,7 +440,7 @@
       <div class="right">
         <a 
           on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} - Galata Dergisi`, `/magazines/sayi${index}/${nextPage}`);
+            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${nextPage}`);
             goToPage(nextPage);
           }}
           href="/magazines/sayi{index}/{nextPage}" 

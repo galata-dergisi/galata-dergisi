@@ -41,8 +41,12 @@
       if (!result.success) throw new Error(`Couldn't get the magazines.`);
 
       allMagazines.push(...result.magazines);
+
+      // Sort magazines by index and determine the latest one
       result.magazines.sort((a, b) => b.index - a.index);
       latestMagazine = result.magazines[0];
+
+      // Rest of the magazines will be presented in the carousel slider
       const carouselMagazines = result.magazines.slice(1);
       carouselInstance.setCarouselItems(carouselMagazines);
     } catch (ex) {
@@ -83,21 +87,28 @@
     loadedMagazine = allMagazines.find((magazine) => magazine.index === index);
   }
 
-  onMount(async () => {
-    // Retrieve list of magazines from server
-    await getMagazines();
-
+  function loadMagazineFromWindowLocation() {
     // Check if the URL is targeting a magazine
     const res = Utils.getMagazineIndexAndPageFromURL(location.href);
 
     if (res) {
       loadMagazine(res.index, res.page);
     }
+  }
+
+  onMount(async () => {
+    // Retrieve list of magazines from server
+    await getMagazines();
+    loadMagazineFromWindowLocation();
   });
 
   window.gotoMagazinePage = function (magazineIndex, page) {
     loadMagazine(Number(magazineIndex), Number(page));
   }
+
+  window.onpopstate = function onPopState(event) {
+    loadMagazineFromWindowLocation();
+  };
 </script>
 
 <style>
@@ -192,6 +203,10 @@
     background-position-x: -13px;
   }
 </style>
+
+<svelte:head>
+  <title>{loadedMagazine ? `Sayı ${loadedMagazine.index} | Galata Dergisi` : 'Galata Dergisi'}</title>
+</svelte:head>
 
 <main>
   {#if !loadedMagazine}

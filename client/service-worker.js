@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
-const CACHE_NAME = 'galatadergisi-cache-v1';
+const CACHE_NAME = 'galatadergisi-cache-v3';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];
