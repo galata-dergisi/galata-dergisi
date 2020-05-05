@@ -23,7 +23,4 @@ const contribute = new Contribute({
   target: document.body,
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-});
-
 export default contribute;
