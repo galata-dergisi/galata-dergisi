@@ -24,6 +24,7 @@
   const MAX_FILE_SIZE = 1024 * 1024 * 100;
 
   let assetType;
+  let darkMode = false;
 
   // DOM Elements
   let form;
@@ -34,9 +35,58 @@
     form.reportValidity();
 
     if (form.checkValidity()) {
+      const formData = new FormData(form);
+
+      if (!formData.get('assetType')) {
+        const { input } = M.FormSelect.getInstance(assetTypeInput);
+        input.readOnly = false;
+        input.setCustomValidity('Lütfen Eser Türü seçimi yapınız.');
+        input.reportValidity();
+        input.readOnly = true;
+        return;
+      }
+
+      if (formData.get('g-recaptcha-response') === '') {
+        M.toast({ 
+          html: 'Lütfen güvenlik doğrulamasını tamamlayınız.',
+          classes: 'yellow darken-4',
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch('/katkida-bulunun', {
+          method: 'POST',
+          body: formData,
+        });
+        const result = await response.json();
+
+        if (!result.success) {
+          M.toast({ 
+            html: result.error,
+            classes: 'red darken-3',
+          });
+          return;
+        }
+
+        M.toast({ 
+          html: 'Gönderi tamamlandı, katkınız için teşekkür ederiz.',
+          classes: 'teal darken-3',
+        });
+
+        form.reset();
+      } catch (ex) {
+        console.trace(ex);
+        M.toast({ 
+          html: 'Beklenmedik bir hata oluştu, lütfen sayfayı yenileyip tekrar deneyin.',
+          classes: 'red darken-3',
+        });
+      }
+    }
   }
 
-    console.log('don\'t submit form');
+  if (window.matchMedia) {
+    darkMode = matchMedia('(prefers-color-scheme: dark').matches;
   }
 
   onMount(M.AutoInit);
@@ -246,11 +296,18 @@
           </div>
         {/if}
 
+        <div 
+          class="g-recaptcha"
+          data-theme="{darkMode ? 'dark' : 'light'}"
+          data-sitekey="6LcNcPYSAAAAACo24ipu3YWTwaLflO1gUDSg4ld1"
+        ></div>
+
+        <br />
+
         <button type="button" class="btn waves-effect waves-light" on:click={onButtonClick}>Gönder</button>
 
         <input type="submit" bind:this={submitButton} />
       </form>
     </div>
   </div>
-
 </div>
