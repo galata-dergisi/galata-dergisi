@@ -20,7 +20,8 @@ const path = require('path');
 const express = require('express');
 const mariadb = require('mariadb');
 const compression = require('compression');
-const MagazinesRouter = require('./MagazinesRouter.js');
+const MagazinesController = require('./MagazinesController.js');
+const ContributionsController = require('./ContributionsController.js');
 
 const PORT = process.env.PORT || 3000;
 const STATIC_PATH = path.join(__dirname, '../public');
@@ -33,14 +34,21 @@ const pool = mariadb.createPool({
   ...config.db,
 });
 
-// Initialize magazines router
-const magazinesRouter = new MagazinesRouter({
+// Initialize magazines controller
+const magazinesController = new MagazinesController({
+  databasePool: pool,
+  staticPath: STATIC_PATH,
+});
+
+// Initialize contributions controller
+const contributionsController = new ContributionsController({
   databasePool: pool,
   staticPath: STATIC_PATH,
 });
 
 app.use(compression({ threshold: 0 }));
-app.use(magazinesRouter.getRouter());
+app.use(contributionsController.getRouter());
+app.use(magazinesController.getRouter());
 app.use(express.static(STATIC_PATH));
 
 const server = app.listen(PORT, '0.0.0.0', (err) => {

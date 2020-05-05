@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 const { Router } = require('express');
 
-class MagazinesRouter {
+class MagazinesController {
   constructor(params) {
     this.databasePool = params.databasePool;
     this.staticPath = params.staticPath;
@@ -147,4 +147,4 @@ class MagazinesRouter {
   }
 }
 
-module.exports = MagazinesRouter;
+module.exports = MagazinesController;
