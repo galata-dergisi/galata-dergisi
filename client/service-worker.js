@@ -17,7 +17,7 @@
 
 /* eslint no-restricted-globals: 1 */
 
-const CACHE_NAME = 'galatadergisi-cache-v4';
+const CACHE_NAME = 'galatadergisi-cache-v5';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];
@@ -121,7 +121,7 @@ self.addEventListener('fetch', (e) => {
 
   // If the resource belongs to an external URL then serve with cache-first approach
   if (currentOrigin !== destinationOrigin) {
-    return e.respondWith(cacheFirst(e.request));
+    return e.respondWith(networkFirst(e.request));
   }
 
   for (const regex of networkFirstList) {
