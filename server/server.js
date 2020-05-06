@@ -20,8 +20,8 @@ const path = require('path');
 const express = require('express');
 const mariadb = require('mariadb');
 const compression = require('compression');
-const MagazinesController = require('./MagazinesController.js');
-const ContributionsController = require('./ContributionsController.js');
+const MagazinesController = require('./controllers/MagazinesController.js');
+const ContributionsController = require('./controllers/ContributionsController.js');
 
 const PORT = process.env.PORT || 3000;
 const STATIC_PATH = path.join(__dirname, '../public');
@@ -44,6 +44,7 @@ const magazinesController = new MagazinesController({
 const contributionsController = new ContributionsController({
   databasePool: pool,
   staticPath: STATIC_PATH,
+  recaptchaSecret: config.recaptchaSecret,
 });
 
 app.use(compression({ threshold: 0 }));

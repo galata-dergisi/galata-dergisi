@@ -20,8 +20,8 @@
 <script>
   import { onMount, tick } from 'svelte';
 
-  // 100 MB
-  const MAX_FILE_SIZE = 1024 * 1024 * 100;
+  // 50 MB
+  const MAX_FILE_SIZE = 1024 * 1024 * 50;
 
   let assetType;
   let darkMode = false;
@@ -253,7 +253,7 @@
         {#if assetType === 'video'}
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" id="videoLink" name="videoLink" maxlength="255" pattern="url" class="validate" required />
+              <input type="url" id="videoLink" name="videoLink" maxlength="255" class="validate" required />
               <label for="videoLink">YouTube Linki</label>
               <span class="helper-text" data-error="Lütfen geçerli bir video adresi giriniz."></span>
             </div>
