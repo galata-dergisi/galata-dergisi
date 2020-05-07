@@ -1,3 +1,20 @@
+// Copyright 2020 Mehmet Baker
+//
+// This file is part of galata-dergisi.
+//
+// galata-dergisi is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// galata-dergisi is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
+
 const path = require('path');
 const https = require('https');
 const multer = require('multer');
@@ -23,6 +40,7 @@ const ASSET_TYPES = [
 class ContributionsController {
   constructor(params) {
     this.databasePool = params.databasePool;
+    this.uploadsDir = params.uploadsDir;
     this.recaptchaSecret = params.recaptchaSecret;
 
     this.init();
@@ -36,29 +54,25 @@ class ContributionsController {
     this.onPostContribution = this.onPostContribution.bind(this);
     this.uploadMiddleware = this.uploadMiddleware.bind(this);
     this.initRoutes();
-
-    // TODO: Init Google Drive loop
   }
 
   initMulter() {
     this.multerStorage = multer.diskStorage({
-      destination: async function destinationFunction(req, file, cb) {
-        const uploadDir = path.join(__dirname, '../uploads');
-
+      destination: async (req, file, cb) => {
         try {
-          const stat = await fsPromises.stat(uploadDir);
+          const stat = await fsPromises.stat(this.uploadsDir);
 
           if (!stat.isDirectory()) {
             throw new Error('`uploads` must be a directory.');
           }
 
-          cb(null, uploadDir);
+          cb(null, this.uploadsDir);
         } catch (ex) {
-          // If uploadDir doesn't exist then create it
+          // If this.uploadsDir doesn't exist then create it
           if (ex.code === 'ENOENT') {
             try {
-              await fsPromises.mkdir(uploadDir);
-              cb(null, uploadDir);
+              await fsPromises.mkdir(this.uploadsDir);
+              cb(null, this.uploadsDir);
             } catch (err) {
               cb(err);
             }
@@ -93,10 +107,11 @@ class ContributionsController {
       if (err instanceof multer.MulterError) {
         switch (err.code) {
           case 'LIMIT_FILE_SIZE': {
-            return res.json({
+            res.json({
               success: false,
               error: 'Dosya çok büyük.',
             });
+            return;
           }
 
           default:
@@ -116,7 +131,7 @@ class ContributionsController {
     return this.router;
   }
 
-  validateFormInputs(req) {
+  validateFormInputs(req) { // eslint-disable-line class-methods-use-this
     if (!req.body.name) {
       throw new CustomError('İsim bilgisi eksik; lütfen isminizi giriniz.');
     }
@@ -195,7 +210,7 @@ class ContributionsController {
         response.on('error', reject);
 
         let data = '';
-        response.on('data', (chunk) => data += chunk);
+        response.on('data', (chunk) => { data += chunk; });
         response.on('end', () => {
           try {
             resolve(JSON.parse(data));
@@ -229,18 +244,17 @@ class ContributionsController {
       const fileName = req.file ? req.file.filename : null;
 
       const result = await conn.query(`
-        INSERT INTO assets (name, email, title, type, video, message, filename) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`, 
-        [
-          req.body.name,
-          req.body.email,
-          req.body.title,
-          req.body.assetType,
-          req.body.videoLink || null,
-          req.body.message,
-          fileName,
-        ],
-      );
+        INSERT INTO assets (contributor, contributorEmail, title, type, video, message, filename) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        req.body.name,
+        req.body.email,
+        req.body.title,
+        req.body.assetType,
+        req.body.videoLink || null,
+        req.body.message,
+        fileName,
+      ]);
 
       if (result.affectedRows !== 1) {
         throw new Error('Failed to insert asset entry into the database.');

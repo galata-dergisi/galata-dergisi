@@ -287,7 +287,7 @@
                   type="file" 
                   name="file" 
                   required="required"
-                  accept="image/*,audio/*,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/rtf,.txt,.pdf,.doc,.docx,.odt,.rtf" />
+                  accept="image/*,audio/*,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/rtf,.txt,.pdf,.doc,.docx,.odt,.rtf,.mp3,.ogg,.jpg,.png,jpeg,.bmp,tiff" />
               </div>
               <div class="file-path-wrapper">
                 <input class="file-path validate" type="text" placeholder="Dosya seçiniz." />

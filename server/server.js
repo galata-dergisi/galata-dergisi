@@ -16,18 +16,25 @@
 // You should have received a copy of the GNU General Public License
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const mariadb = require('mariadb');
 const compression = require('compression');
 const MagazinesController = require('./controllers/MagazinesController.js');
 const ContributionsController = require('./controllers/ContributionsController.js');
+const GDriveSync = require('./services/GDriveSync.js');
+const Notifications = require('./services/Notifications.js');
 
 const PORT = process.env.PORT || 3000;
 const STATIC_PATH = path.join(__dirname, '../public');
+const UPLOADS_DIR = path.join(__dirname, '../uploads');
 
 const app = express();
 const config = require('../config.js');
+
+// Setting recursive to true prevents EEXIST errors
+fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 // Initialize MariaDB connection pool
 const pool = mariadb.createPool({
@@ -44,7 +51,17 @@ const magazinesController = new MagazinesController({
 const contributionsController = new ContributionsController({
   databasePool: pool,
   staticPath: STATIC_PATH,
+  uploadsDir: UPLOADS_DIR,
   recaptchaSecret: config.recaptchaSecret,
+});
+
+GDriveSync.init({
+  databasePool: pool,
+  uploadsDir: UPLOADS_DIR,
+});
+
+Notifications.init({
+  databasePool: pool,
 });
 
 app.use(compression({ threshold: 0 }));

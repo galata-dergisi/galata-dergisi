@@ -15,6 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
-module.exports = class CustomError extends Error {
 
-};
+// 1 minute
+const INTERVAL = 60 * 1000;
+
+class Notifications {
+  constructor(params) {
+    this.databasePool = params.databasePool;
+  }
+
+  static init(params) {
+    const notifications = new Notifications(params);
+    notifications.start();
+  }
+
+  start() {
+    this.loop();
+  }
+
+  async loop() {
+    setTimeout(() => this.loop(), INTERVAL);
+  }
+}
+
+module.exports = Notifications;
