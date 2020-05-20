@@ -18,6 +18,8 @@
 const fs = require('fs');
 const path = require('path');
 const { google } = require('googleapis');
+const Utils = require('../lib/Utils.js');
+const Notifications = require('./Notifications.js');
 
 const fsPromises = fs.promises;
 
@@ -26,6 +28,7 @@ const SYNC_INTERVAL = 60 * 1000;
 
 class GDriveSync {
   constructor(params) {
+    this.settings = params.settings;
     this.databasePool = params.databasePool;
     this.uploadsDir = params.uploadsDir;
   }
@@ -37,7 +40,6 @@ class GDriveSync {
 
   async start() {
     try {
-      await this.getSettings();
       this.initOAuthClient();
       this.initDrive();
       this.syncLoop();
@@ -45,25 +47,6 @@ class GDriveSync {
       console.trace(ex);
       console.error('Failed to initialize Google Drive Sync.');
       process.exit(13);
-    }
-  }
-
-  async getSettings() {
-    let conn;
-
-    try {
-      conn = await this.databasePool.getConnection();
-      const rows = await conn.query('SELECT * FROM settings LIMIT 1');
-
-      if (rows.length !== 1) {
-        throw new Error('Settings table is misconfigured!');
-      }
-
-      [this.settings] = rows;
-    } finally {
-      if (conn) {
-        conn.release();
-      }
     }
   }
 
@@ -120,6 +103,8 @@ class GDriveSync {
 
       console.log('Querying database for new assets...');
       const rows = await conn.query('SELECT * FROM assets WHERE isUploaded = 0 AND fileName IS NOT NULL');
+      console.log(Utils.constructEnglishCountingSentence(rows.length, 'asset'));
+
       return rows;
     } finally {
       if (conn) {
@@ -130,7 +115,7 @@ class GDriveSync {
 
   async fileExists(asset) {
     try {
-      const stat = await fsPromises.stat(path.join(this.uploadsDir, asset.filename));
+      const stat = await fsPromises.stat(asset.filepath);
 
       if (stat.isFile()) {
         return true;
@@ -172,7 +157,7 @@ class GDriveSync {
           },
         },
         media: {
-          body: fs.createReadStream(path.join(this.uploadsDir, asset.filename)),
+          body: fs.createReadStream(asset.filepath),
         },
       });
 
@@ -183,34 +168,96 @@ class GDriveSync {
       console.log('File Name: ', fileName);
       console.log('Web Link : ', res.data.webViewLink);
       console.log('--------------------------------------------');
-      await this.saveDriveData(asset.id, res.data);
+
+      asset.googleDriveData = res.data;
     } catch (ex) {
-      // console.log(ex.message, ex.code, ex.response.data.error_description);
-      console.trace(ex);
+      if (ex && ex.response && ex.response.data && ex.response.data.error_description) {
+        const { error, error_description } = ex.response.data;
+        this.sendErrorNotification({
+          title: 'Google Drive Upload Failed!',
+          error: ex,
+          message: `Error: ${error} <br />Description: ${error_description}`,
+        });
+        
+        throw ex;
+      }
+
+      this.sendErrorNotification({
+        title: 'Google Drive Upload Failed!',
+        error: ex,
+      });
+
+      throw ex;
     }
   }
 
-  async saveDriveData(assetId, driveData) {
+  async sendErrorNotification(data) {
+    let conn;
+
+    try {
+      conn = await this.databasePool.getConnection();
+      await Notifications.addErrorNotification(conn, this.settings.adminRecipient, data);
+    } catch (ex) {
+      console.trace(ex);
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+
+  async saveDriveDataToDatabase(asset) {
     let conn;
 
     try {
       conn = await this.databasePool.getConnection();
 
       const updateResult = await conn.query('UPDATE assets SET driveId = ?, isUploaded = 1, driveLink = ? WHERE id = ?', [
-        driveData.id,
-        driveData.webViewLink,
-        assetId,
+        asset.googleDriveData.id,
+        asset.googleDriveData.webViewLink,
+        asset.id,
       ]);
 
       if (updateResult.affectedRows !== 1) {
-        throw new Error(`Failed to update asset #${assetId}'s entry in database.`);
+        throw new Error(`Failed to update asset #${asset.id}'s entry in database.`);
       }
 
-      console.log(`Asset #${assetId}'s file id has been saved to database.`);
-    } finally {
+      console.log(`Asset #${asset.id}'s file id is saved to database.`);
+      await this.sendNotification(asset.id, conn);
+    } catch (error) {
+      this.sendErrorNotification({
+        title: 'Failed to Save Google Drive Data to Database!',
+        error,
+      });
+
+      throw error;
+    }finally {
       if (conn) {
         conn.release();
       }
+    }
+  }
+
+  async sendNotification(assetId, conn) {
+    const rows = await conn.query('SELECT * FROM assets WHERE id = ?', [assetId]);
+
+    if (rows.length === 1) {
+      const [asset] = rows;
+      await Notifications.addContributionNotification(conn, this.settings.assetRecipient, asset);
+    }
+  }
+
+  async deleteAssetFile(asset) {
+    try {
+      await fsPromises.unlink(asset.filepath);
+      console.log(`Asset #${asset.id}'s file is deleted from server.`);
+    } catch (error) {
+      this.sendErrorNotification({
+        title: 'Failed to Delete Asset File!',
+        error,
+      });
+
+      throw error;
     }
   }
 
@@ -219,8 +266,16 @@ class GDriveSync {
       const assets = await this.getAssets();
 
       for (const asset of assets) {
+        asset.filepath = path.join(this.uploadsDir, asset.filename);
+
         if (await this.fileExists(asset)) {
           await this.uploadAsset(asset);
+
+          console.log('Saving Google Drive information to database...');
+          await this.saveDriveDataToDatabase(asset);
+
+          console.log('Deleting the uploaded file from server...');
+          this.deleteAssetFile(asset);
         }
       }
     } catch (ex) {

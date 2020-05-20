@@ -23,6 +23,7 @@ const querystring = require('querystring');
 const { Router } = require('express');
 const { v4: uuidv4 } = require('uuid');
 const CustomError = require('../lib/CustomError.js');
+const Notifications = require('../services/Notifications.js');
 
 // 50 MB
 const MAX_FILE_SIZE = 1024 * 1024 * 50;
@@ -39,9 +40,9 @@ const ASSET_TYPES = [
 
 class ContributionsController {
   constructor(params) {
+    this.settings = params.settings;
     this.databasePool = params.databasePool;
     this.uploadsDir = params.uploadsDir;
-    this.recaptchaSecret = params.recaptchaSecret;
 
     this.init();
   }
@@ -187,7 +188,7 @@ class ContributionsController {
     return new Promise((resolve, reject) => {
       const url = new URL('/recaptcha/api/siteverify', 'https://www.google.com/');
       const postData = querystring.stringify({
-        secret: this.recaptchaSecret,
+        secret: this.settings.recaptchaSecret,
         response: req.body['g-recaptcha-response'],
       });
 
@@ -258,6 +259,18 @@ class ContributionsController {
 
       if (result.affectedRows !== 1) {
         throw new Error('Failed to insert asset entry into the database.');
+      }
+
+      // A contributon without an asset has been made. Add a notification to the queue
+      if (fileName === null) {
+        await Notifications.addContributionNotification(conn, this.settings.assetRecipient, {
+          contributor: req.body.name,
+          contributorEmail: req.body.email,
+          title: req.body.title,
+          type: req.body.assetType,
+          video: req.body.videoLink || null,
+          message: req.body.message,
+        });
       }
 
       res.json({ success: true });
