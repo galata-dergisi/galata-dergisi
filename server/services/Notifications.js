@@ -318,7 +318,7 @@ class Notifications {
         id: queueItem.id,
         notify: ['failure', 'delay'],
         recipient: this.settings.adminRecipient,
-        'return': 'headers',
+        return: 'headers',
       },
     };
   }
@@ -336,7 +336,7 @@ class Notifications {
 
       console.log(`Queue Item #${id} is removed.`);
     } catch (ex) {
-      console.error(`Failed to remove entry from database.`);
+      console.error('Failed to remove entry from database.');
       console.trace(ex);
     } finally {
       if (conn) {
