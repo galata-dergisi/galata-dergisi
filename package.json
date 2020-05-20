@@ -7,6 +7,9 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
     "nodemon": "^2.0.2",
     "npm-run-all": "^4.1.5",
     "rollup": "^1.12.0",
@@ -19,13 +22,18 @@
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.17.1",
-    "mariadb": "^2.1.1"
+    "googleapis": "39",
+    "mariadb": "^2.1.1",
+    "multer": "^1.4.2",
+    "nodemailer": "^6.4.6",
+    "uuid": "^8.0.0"
   },
   "scripts": {
     "server": "node server/server.js",
     "build": "rollup -c",
     "autobuild": "rollup -c -w",
     "dev": "run-p start:dev autobuild",
+    "lint": "eslint \"client/**/*.js\" \"server/**/*.js\"",
     "start": "sirv public --single",
     "start:dev": "nodemon server/server.js"
   },

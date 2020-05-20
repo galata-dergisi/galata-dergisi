@@ -1,20 +1,18 @@
-# galatadergisi.org
+# galata-dergisi
 
-## License and Copyright
+[Türkçe için tıklayınız.](README-TR.md)
 
-Copyright &copy; 2020 Mehmet Baker
+Source code of https://galatadergisi.org.
 
-This file is part of galata-dergisi.
+## Contributing to galata-dergisi
 
-galata-dergisi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+* If you want to report an issue or request a new feature then please [create an issue](https://github.com/mehmetb/galata-dergisi/issues).
+* If you want to contribute to the software then please open an issue first and then assign it to yourself. Otherwise there is a chance for us to be working on the same thing since we don't publish our roadmap.
 
-galata-dergisi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+## License
 
-You should have received a copy of the GNU General Public License
-along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
+![GNU GPLv3 - Free as ın Freedom](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
+
+GNU General Public License v3.0 or later.
+
+See [COPYING](COPYING) to see the full text.
