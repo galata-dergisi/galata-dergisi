@@ -407,12 +407,20 @@ html, body {
   src: url('../fonts/Stempel-Garamond-W01-Roman.woff') format('woff');
 }
 
-ul.uDaghan {
+ul.uDaghan, ul.suratKusurat {
   font-family:"Lucida Console", monospace;
   font-size:12px;
   margin:0;
   padding:0;
   line-height:42px;
+}
+
+ul.suratKusurat {
+  padding-left: 20px;
+}
+
+ul.suratKusurat li {
+  list-style-type: circle;
 }
 
 h1{
