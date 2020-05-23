@@ -21,8 +21,8 @@ let audCnt; // HTML5 Audio Element
 let nav; // Tracker Navigator
 let pTimer; // Current Time (Play Time)
 let bar; // Volume Bar
-let inputs = new Array(); // Hidden Inputs
-const songs = new Array(); // Songs
+let inputs = []; // Hidden Inputs
+let songs = []; // Songs
 let playableExt;
 let selSong; // Selected Song
 let mouseX; // X-Coordinates of the Mouse Relative to the Viewport
@@ -45,6 +45,8 @@ function initPlayer() {
   pTimer = document.getElementById('player_time');
   bar = document.getElementById('volume_bar');
   inputs = document.getElementsByTagName('input');
+  songs = [];
+
   checkBrowser();
   loadSongs();
   setVolumeButton();
@@ -88,15 +90,12 @@ function noPlayable() {
 }
 
 function loadSongs() { // Initialise the Player
-  let each_song = new Array();
   playableExt = getPlayableExt();
 
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].name == 'player_songs') {
-      each_song = new Array();
       if (inputs[i].size == playableExt) {
-        each_song.push(inputs[i].id, inputs[i].value, inputs[i].className);
-        songs.push(each_song);
+        songs.push([inputs[i].id, inputs[i].value, inputs[i].className]);
       }
     }
   }
