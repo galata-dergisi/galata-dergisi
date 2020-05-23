@@ -33,21 +33,6 @@ export default class Utils {
   }
 
   /**
-   * Adds a **one-time** listener function (`callback`) to the target HTML element for the event named `eventName`.
-   * @param {HTMLElement} target Target element.
-   * @param {string} eventName The name of the event.
-   * @param {function} callback The callback function.
-   */
-  static once(target, eventName, callback) {
-    const handler = function onceHandler(...args) {
-      target.removeEventListener(eventName, handler);
-      callback(...args);
-    };
-
-    target.addEventListener(eventName, handler);
-  }
-
-  /**
    * Forces the browser to download the image (and cache it).
    * @param {string} src Image URL
    * @returns {Promise}
