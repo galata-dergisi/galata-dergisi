@@ -17,13 +17,18 @@
 
 /* eslint no-restricted-globals: 1 */
 
-const CACHE_NAME = 'galatadergisi-cache-v7';
+const CACHE_NAME = 'galatadergisi-cache-v8';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];
 const networkFirstList = [
   /\/magazines\/sayi\d+\/pages$/,
 ];
+const cacheFirstList = [
+  /^https:\/\/cdnjs\.cloudflare\.com\//,
+  /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
+  /^https:\/\/kit(?:-free)\.fontawesome\.com\//,
+]
 
 async function cleanUpObseleteCaches() {
   try {
@@ -121,6 +126,12 @@ self.addEventListener('fetch', (e) => {
 
   // If the resource belongs to an external URL then serve with cache-first approach
   if (currentOrigin !== destinationOrigin) {
+    for (const regex of cacheFirstList) {
+      if (regex.test(e.request.url)) {
+        return e.respondWith(cacheFirst(e.request));
+      }
+    }
+
     return e.respondWith(networkFirst(e.request));
   }
 

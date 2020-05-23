@@ -65,6 +65,8 @@ html, body {
   font-family: default !important;
   font-size: default !important;
   line-height: default !important;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .player_details { /*Song Name, Song Artist, Next-Prev Buttons, <hr>*/
