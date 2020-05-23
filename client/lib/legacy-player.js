@@ -33,10 +33,11 @@ let isSafari;
 let isOpera;
 let isIE;
 
-$(document).mousemove((e) => { // Mouse Position holded in mouseX and mouseY (everytime)
+// Mouse Position holded in mouseX and mouseY (everytime)
+document.addEventListener('mousemove', (e) => {
   mouseX = e.screenX - window.screenX;
   mouseY = e.screenY - window.screenY;
-}).mouseover();
+});
 
 function initPlayer() {
   current = document.getElementById('tracker_current');
