@@ -81,7 +81,7 @@ class MagazinesController {
 
     try {
       conn = await this.databasePool.getConnection();
-      const rows = await conn.query('SELECT id, publishDateText, numberOfPages, thumbnailURL, '
+      const rows = await conn.query('SELECT id, publishDateText, thumbnailURL, '
         + 'tableOfContents FROM magazines WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP()');
       const result = {
         success: true,
@@ -90,12 +90,11 @@ class MagazinesController {
 
       for (const row of rows) {
         const {
-          id, publishDateText, numberOfPages, thumbnailURL, tableOfContents,
+          id, publishDateText, thumbnailURL, tableOfContents,
         } = row;
         result.magazines.push({
           index: +id,
           publishDateText,
-          numberOfPages,
           thumbnailURL,
           tableOfContents,
         });

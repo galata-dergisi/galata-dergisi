@@ -21,7 +21,6 @@
   export let index;
   export let publishDateText;
   export let thumbnailURL;
-  export let numberOfPages;
   export let visible = true;
   export let carouselItem = false;
 

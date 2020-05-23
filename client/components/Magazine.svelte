@@ -20,7 +20,7 @@
 <script>
   export let index;
   export let thumbnailURL;
-  export let numberOfPages;
+
   export let publishDateText;
   export let tableOfContents;
 
@@ -34,8 +34,9 @@
   let magazine;
   let containerElement;
 
-  let magazinePageContents = downlaodPageContents();
+  let magazinePageContents = null;
   let magazinePageElements = null;
+  let numberOfPages = null;
 
   let isLoaded = false;
 
@@ -53,7 +54,7 @@
   const dispatch = createEventDispatcher();
 
   // Adds the pages that the book will need
-  async function addPage(page) {
+  function addPage(page) {
     // 	First check if the page is already in the book
     if (!magazineInstance.turn("hasPage", page)) {
       // Create an element for this page
@@ -65,24 +66,20 @@
       // If not then add the page
       magazineInstance.turn("addPage", element, page);
 
-      try {
-        const pages = await magazinePageContents;
-        element.html(pages[page]);
+      element.html(magazinePageContents[page]);
 
-        // Bind a clicks to event handler
-        const anchors = element[0].querySelectorAll('a');
+      // Bind a clicks to event handler
+      const anchors = element[0].querySelectorAll('a');
 
-        for (let i = 0; i < anchors.length; ++i) {
-          anchors[i].addEventListener('click', onAnchorClick);
-        }
-      } catch (ex) {
-        element.html(`<div class"load-error">Sayfa yüklenemedi</div>`);
-        console.trace(ex);
+      for (let i = 0; i < anchors.length; ++i) {
+        anchors[i].addEventListener('click', onAnchorClick);
       }
     }
   }
 
   function setNextAndPrevPage(currentPage) {
+    if (typeof currentPage !== 'number') return;
+
     // currentPage is even
     if (currentPage % 2 === 0) {
       nextPage = Math.min(numberOfPages, currentPage + 2);
@@ -94,7 +91,7 @@
     }
   }
 
-  async function downlaodPageContents() {
+  async function getMagazinePages() {
     const response = await fetch(`/magazines/${index}/pages`);      
     const result = await response.json();
 
@@ -132,7 +129,7 @@
    * Makes sure that `page` is ready in turn.js
    * An attempt to workaround the issue in turn.js:1626
    */
-  function makeSureOfRange(page) {
+  function ensureRange(page) {
     if (!magazineInstance) return;
 
     // Gets the range of pages that the magazine needs right now
@@ -154,37 +151,46 @@
   });
 
   onMount(async () => {
-    magazineInstance = jQuery(magazine);
+    try {
+      magazineInstance = jQuery(magazine);
 
-    magazineInstance.turn({
-      acceleration: true,
-      pages: numberOfPages,
-      elevation: 50,
-      gradients: !jQuery.isTouch,
-      width: 1000,
-      height: 700,
-      disable3d: true,
-      when: {
-        turning: function(e, page, view) {
-          makeSureOfRange(page);
+      magazinePageContents = await getMagazinePages();
+      numberOfPages = Object.keys(magazinePageContents).length;
+
+      magazineInstance.turn({
+        acceleration: true,
+        pages: numberOfPages,
+        elevation: 50,
+        gradients: !jQuery.isTouch,
+        width: 1000,
+        height: 700,
+        disable3d: true,
+        when: {
+          turning: function(e, page, view) {
+            ensureRange(page);
+          },
+          turned: function(e, page) {
+            if (isLoaded) {
+              moveLeft = page === 1 || page === numberOfPages;
+            }
+
+            isLoaded = true;
+          },
         },
-        turned: function(e, page) {
-          if (isLoaded) {
-            moveLeft = page === 1 || page === numberOfPages;
-          }
+      });
 
-          isLoaded = true;
-        },
-      },
-    });
-
-    if (landingPage !== 1) {
-      goToPage(landingPage);
+      if (landingPage !== 1) {
+        goToPage(landingPage);
+      }
+    } catch (ex) {
+      console.trace(ex);
+      alert('Dergi yüklenirken bir hata oluştu!');
     }
   });
 
   export function goToPage(pageNum) {
-    makeSureOfRange(pageNum);
+    pageNum = Number(pageNum);
+    ensureRange(pageNum);
     magazineInstance.turn('page', pageNum);
   }
 
