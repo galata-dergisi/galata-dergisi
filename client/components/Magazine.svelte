@@ -66,7 +66,17 @@
       // If not then add the page
       magazineInstance.turn("addPage", element, page);
 
-      element.html(magazinePageContents[page]);
+      let content = magazinePageContents[page];
+
+      if (page !== 1 && page !== numberOfPages) {
+        if (Utils.isVisibleContent(content)) {
+          content += `<div class="mPageNum"><div class="pageNumLeft"></div><div class="pageNum">${page}</div><div class="pageNumRight"></div></div>`;
+        }
+
+        content = `<div class="gradient">${content}</div>`;
+      }
+
+      element.html(content);
 
       // Bind a clicks to event handler
       const anchors = element[0].querySelectorAll('a');

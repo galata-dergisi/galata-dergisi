@@ -64,4 +64,11 @@ export default class Utils {
       index: Number(index),
     };
   }
+
+  static isVisibleContent(content) {
+    const div = document.createElement('div');
+    div.innerHTML = content;
+
+    return div.querySelector('img') || div.innerText.trim().length > 0;
+  }
 }
