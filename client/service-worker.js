@@ -17,7 +17,7 @@
 
 /* eslint no-restricted-globals: 1 */
 
-const CACHE_NAME = 'galatadergisi-cache-v6';
+const CACHE_NAME = 'galatadergisi-cache-v7';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];
@@ -99,7 +99,7 @@ self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll([
     '/bundle.css',
     '/bundle.js',
-    '/favicon.png',
+    '/images/favicon.png',
     '/global.css',
     '/index.html',
     '/legacy-player.js',
