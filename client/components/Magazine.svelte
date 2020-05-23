@@ -20,7 +20,7 @@
 <script>
   export let index;
   export let thumbnailURL;
-  export let numberOfPages;
+
   export let publishDateText;
   export let tableOfContents;
 
@@ -34,8 +34,9 @@
   let magazine;
   let containerElement;
 
-  let magazinePageContents = downlaodPageContents();
+  let magazinePageContents = null;
   let magazinePageElements = null;
+  let numberOfPages = null;
 
   let isLoaded = false;
 
@@ -53,7 +54,7 @@
   const dispatch = createEventDispatcher();
 
   // Adds the pages that the book will need
-  async function addPage(page) {
+  function addPage(page) {
     // 	First check if the page is already in the book
     if (!magazineInstance.turn("hasPage", page)) {
       // Create an element for this page
@@ -65,24 +66,30 @@
       // If not then add the page
       magazineInstance.turn("addPage", element, page);
 
-      try {
-        const pages = await magazinePageContents;
-        element.html(pages[page]);
+      let content = magazinePageContents[page];
 
-        // Bind a clicks to event handler
-        const anchors = element[0].querySelectorAll('a');
-
-        for (let i = 0; i < anchors.length; ++i) {
-          anchors[i].addEventListener('click', onAnchorClick);
+      if (page !== 1 && page !== numberOfPages) {
+        if (Utils.isVisibleContent(content)) {
+          content += `<div class="mPageNum"><div class="pageNumLeft"></div><div class="pageNum">${page}</div><div class="pageNumRight"></div></div>`;
         }
-      } catch (ex) {
-        element.html(`<div class"load-error">Sayfa yüklenemedi</div>`);
-        console.trace(ex);
+
+        content = `<div class="gradient">${content}</div>`;
+      }
+
+      element.html(content);
+
+      // Bind a clicks to event handler
+      const anchors = element[0].querySelectorAll('a');
+
+      for (let i = 0; i < anchors.length; ++i) {
+        anchors[i].addEventListener('click', onAnchorClick);
       }
     }
   }
 
   function setNextAndPrevPage(currentPage) {
+    if (typeof currentPage !== 'number') return;
+
     // currentPage is even
     if (currentPage % 2 === 0) {
       nextPage = Math.min(numberOfPages, currentPage + 2);
@@ -94,7 +101,7 @@
     }
   }
 
-  async function downlaodPageContents() {
+  async function getMagazinePages() {
     const response = await fetch(`/magazines/${index}/pages`);      
     const result = await response.json();
 
@@ -132,7 +139,7 @@
    * Makes sure that `page` is ready in turn.js
    * An attempt to workaround the issue in turn.js:1626
    */
-  function makeSureOfRange(page) {
+  function ensureRange(page) {
     if (!magazineInstance) return;
 
     // Gets the range of pages that the magazine needs right now
@@ -154,37 +161,46 @@
   });
 
   onMount(async () => {
-    magazineInstance = jQuery(magazine);
+    try {
+      magazineInstance = jQuery(magazine);
 
-    magazineInstance.turn({
-      acceleration: true,
-      pages: numberOfPages,
-      elevation: 50,
-      gradients: !jQuery.isTouch,
-      width: 1000,
-      height: 700,
-      disable3d: true,
-      when: {
-        turning: function(e, page, view) {
-          makeSureOfRange(page);
+      magazinePageContents = await getMagazinePages();
+      numberOfPages = Object.keys(magazinePageContents).length;
+
+      magazineInstance.turn({
+        acceleration: true,
+        pages: numberOfPages,
+        elevation: 50,
+        gradients: !jQuery.isTouch,
+        width: 1000,
+        height: 700,
+        disable3d: true,
+        when: {
+          turning: function(e, page, view) {
+            ensureRange(page);
+          },
+          turned: function(e, page) {
+            if (isLoaded) {
+              moveLeft = page === 1 || page === numberOfPages;
+            }
+
+            isLoaded = true;
+          },
         },
-        turned: function(e, page) {
-          if (isLoaded) {
-            moveLeft = page === 1 || page === numberOfPages;
-          }
+      });
 
-          isLoaded = true;
-        },
-      },
-    });
-
-    if (landingPage !== 1) {
-      goToPage(landingPage);
+      if (landingPage !== 1) {
+        goToPage(landingPage);
+      }
+    } catch (ex) {
+      console.trace(ex);
+      alert('Dergi yüklenirken bir hata oluştu!');
     }
   });
 
   export function goToPage(pageNum) {
-    makeSureOfRange(pageNum);
+    pageNum = Number(pageNum);
+    ensureRange(pageNum);
     magazineInstance.turn('page', pageNum);
   }
 
@@ -195,12 +211,12 @@
 
   function shareOnFacebook() {
     window.open('https://www.facebook.com/sharer.php?' +
-      'u=' + encodeURIComponent(`https://galatadergisi.org/magazines/sayi${index}/${currentPage}`) +
+      'u=' + encodeURIComponent(`https://galatadergisi.org/dergiler/sayi${index}/${currentPage}`) +
       '&t=' + encodeURIComponent(`Galata Dergisi - Sayı ${index} (${publishDateText})`));
   }
 
   function shareOnTwitter() {
-    const url = encodeURIComponent(`https://galatadergisi.org/magazines/sayi${index}/${currentPage}`);
+    const url = encodeURIComponent(`https://galatadergisi.org/dergiler/sayi${index}/${currentPage}`);
     const shareText = encodeURIComponent(`Galata Dergisi - Sayı ${index} (${publishDateText})`);
 
     window.open(`https://twitter.com/intent/tweet?original_referer=${url}&url=${url}&text=${shareText}`);
@@ -389,11 +405,11 @@
   class="toolbar">
   <div class="top">
     <a
-      href="/magazines/sayi{index}/{tableOfContents}"
+      href="/dergiler/sayi{index}/{tableOfContents}"
       title="İçindekiler"
       on:click|preventDefault={() => {
         goToPage(tableOfContents);
-        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${tableOfContents}`);
+        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${tableOfContents}`);
       }}>
       <i class="fas fa-list-alt"></i>
     </a>
@@ -428,10 +444,10 @@
       <div class="left">
         <a 
           on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${prevPage}`);
+            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${prevPage}`);
             goToPage(prevPage);
           }}
-          href="/magazines/sayi{index}/{prevPage}" 
+          href="/dergiler/sayi{index}/{prevPage}" 
           title="Önceki Sayfa">
           <i class="fas fa-arrow-alt-circle-left" />
         </a>
@@ -440,10 +456,10 @@
       <div class="right">
         <a 
           on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${nextPage}`);
+            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${nextPage}`);
             goToPage(nextPage);
           }}
-          href="/magazines/sayi{index}/{nextPage}" 
+          href="/dergiler/sayi{index}/{nextPage}" 
           title="Sonraki Sayfa">
           <i class="fas fa-arrow-alt-circle-right" />
         </a>

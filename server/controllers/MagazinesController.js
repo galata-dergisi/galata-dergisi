@@ -1,17 +1,17 @@
 // Copyright 2020 Mehmet Baker
-// 
+//
 // This file is part of galata-dergisi.
-// 
+//
 // galata-dergisi is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // galata-dergisi is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 const { Router } = require('express');
 
-class MagazinesRouter {
+class MagazinesController {
   constructor(params) {
     this.databasePool = params.databasePool;
     this.staticPath = params.staticPath;
@@ -46,7 +46,7 @@ class MagazinesRouter {
     this.router.get('/magazines/:magazineIndex/audio/:audioFile', (req, res) => this.serveAudioFiles(req, res));
 
     // DEV MODE: Serve individual magazine URLs (nginx will perform this on the server)
-    this.router.get(/^\/magazines\/sayi\d+(?:\/\d+)?/, (...args) => this.serveIndex(...args));
+    this.router.get(/^\/dergiler\/sayi\d+(?:\/\d+)?/, (...args) => this.serveIndex(...args));
   }
 
   getRouter() {
@@ -58,7 +58,7 @@ class MagazinesRouter {
       const stat = await fs.promises.stat(this.indexPath);
 
       if (stat.mtime !== this.cache.lastModifiedDate) {
-        this.cache.fileContent = await fs.promises.readFile(this.indexPath, 'utf8')
+        this.cache.fileContent = await fs.promises.readFile(this.indexPath, 'utf8');
         this.cache.lastModifiedDate = stat.mtime;
       }
 
@@ -81,7 +81,7 @@ class MagazinesRouter {
 
     try {
       conn = await this.databasePool.getConnection();
-      const rows = await conn.query('SELECT id, publishDateText, numberOfPages, thumbnailURL, '
+      const rows = await conn.query('SELECT id, publishDateText, thumbnailURL, '
         + 'tableOfContents FROM magazines WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP()');
       const result = {
         success: true,
@@ -89,11 +89,12 @@ class MagazinesRouter {
       };
 
       for (const row of rows) {
-        const { id, publishDateText, numberOfPages, thumbnailURL, tableOfContents } = row;
+        const {
+          id, publishDateText, thumbnailURL, tableOfContents,
+        } = row;
         result.magazines.push({
           index: +id,
           publishDateText,
-          numberOfPages,
           thumbnailURL,
           tableOfContents,
         });
@@ -145,4 +146,4 @@ class MagazinesRouter {
   }
 }
 
-module.exports = MagazinesRouter;
+module.exports = MagazinesController;

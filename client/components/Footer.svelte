@@ -41,7 +41,6 @@
   İletişim:
   <a href="mailto:bilgi@galatadergisi.org">bilgi@galatadergisi.org</a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Katkıda Bulunun:
-  <a href="mailto:editorler@galatadergisi.org">editorler@galatadergisi.org</a>
+  İçerik göndererek katkıda bulunmak için <a href="/katkida-bulunun">tıklayın</a>.
   <!--googleon: snippet-->
 </footer>

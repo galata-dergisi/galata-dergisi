@@ -21,7 +21,6 @@
   export let index;
   export let publishDateText;
   export let thumbnailURL;
-  export let numberOfPages;
   export let visible = true;
   export let carouselItem = false;
 
@@ -40,17 +39,17 @@
 
   export function fadeIn() {
     visible = true;
-    Utils.once(anchorElement, 'animationend', () => {
+    anchorElement.addEventListener('animationend', () => {
       anchorElement.classList.remove('fade-in');
-    });
+    }, { once: true });
     anchorElement.classList.add('fade-in');
   }
 
   export function fadeOut() {
-    Utils.once(anchorElement, 'animationend', () => {
+    anchorElement.addEventListener('animationend', () => {
       visible = false;
       anchorElement.classList.remove('fade-out');
-    });
+    }, { once: true });
     anchorElement.classList.add('fade-out');
   }
 </script>

@@ -20,11 +20,11 @@
 <script>
   import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
-  import Utils from './lib/Utils.js';
-  import Footer from './components/Footer.svelte';
-  import Carousel from './components/Carousel.svelte';
-  import Magazine from './components/Magazine.svelte';
-  import MagazineThumbnail from './components/MagazineThumbnail.svelte';
+  import Utils from '../../lib/Utils.js';
+  import Footer from '../../components/Footer.svelte';
+  import Carousel from '../../components/Carousel.svelte';
+  import Magazine from '../../components/Magazine.svelte';
+  import MagazineThumbnail from '../../components/MagazineThumbnail.svelte';
 
   const allMagazines = [];
   let latestMagazine = null;
@@ -36,13 +36,14 @@
 
   async function getMagazines() {
     try {
+      // List of magazines
       const result = await Utils.httpGet('/magazines', { json: true });
 
       if (!result.success) throw new Error(`Couldn't get the magazines.`);
 
       allMagazines.push(...result.magazines);
 
-      // Sort magazines by index and determine the latest one
+      // Sort magazines by index and determine the latest one (descending sort)
       result.magazines.sort((a, b) => b.index - a.index);
       latestMagazine = result.magazines[0];
 
@@ -50,8 +51,8 @@
       const carouselMagazines = result.magazines.slice(1);
       carouselInstance.setCarouselItems(carouselMagazines);
     } catch (ex) {
-      //TODO: Show a modal box to the client.
       console.trace(ex);
+      alert('Beklenmedik bir hata oluştu. Lütfen sayfayı yenileyerek tekrar deneyiniz.');
     }
   }
 
@@ -99,6 +100,8 @@
   onMount(async () => {
     // Retrieve list of magazines from server
     await getMagazines();
+
+    // If current URL is pointing to a magazine then load it
     loadMagazineFromWindowLocation();
   });
 

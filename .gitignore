@@ -63,3 +63,9 @@ public/
 config.js
 .vscode/
 /client/audio
+utility-scripts/
+*.sql
+sql-backups/
+uploads/
+credentials.json
+token.json
