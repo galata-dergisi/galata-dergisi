@@ -51,7 +51,7 @@ export default class Utils {
     const legacyURLRegex = /^#magazines\/sayi(\d+)\/?(\d+)?$/;
     const matches = legacyURLRegex.test(url.hash)
       ? url.hash.match(legacyURLRegex)
-      : url.pathname.match(/^\/magazines\/sayi(\d+)(?:\/(\d+))?$/);
+      : url.pathname.match(/^\/dergiler\/sayi(\d+)(?:\/(\d+))?$/);
 
     if (!matches || matches.length < 2) {
       return null;

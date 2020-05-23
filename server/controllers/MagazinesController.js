@@ -46,7 +46,7 @@ class MagazinesController {
     this.router.get('/magazines/:magazineIndex/audio/:audioFile', (req, res) => this.serveAudioFiles(req, res));
 
     // DEV MODE: Serve individual magazine URLs (nginx will perform this on the server)
-    this.router.get(/^\/magazines\/sayi\d+(?:\/\d+)?/, (...args) => this.serveIndex(...args));
+    this.router.get(/^\/dergiler\/sayi\d+(?:\/\d+)?/, (...args) => this.serveIndex(...args));
   }
 
   getRouter() {

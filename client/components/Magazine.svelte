@@ -211,12 +211,12 @@
 
   function shareOnFacebook() {
     window.open('https://www.facebook.com/sharer.php?' +
-      'u=' + encodeURIComponent(`https://galatadergisi.org/magazines/sayi${index}/${currentPage}`) +
+      'u=' + encodeURIComponent(`https://galatadergisi.org/dergiler/sayi${index}/${currentPage}`) +
       '&t=' + encodeURIComponent(`Galata Dergisi - Sayı ${index} (${publishDateText})`));
   }
 
   function shareOnTwitter() {
-    const url = encodeURIComponent(`https://galatadergisi.org/magazines/sayi${index}/${currentPage}`);
+    const url = encodeURIComponent(`https://galatadergisi.org/dergiler/sayi${index}/${currentPage}`);
     const shareText = encodeURIComponent(`Galata Dergisi - Sayı ${index} (${publishDateText})`);
 
     window.open(`https://twitter.com/intent/tweet?original_referer=${url}&url=${url}&text=${shareText}`);
@@ -405,11 +405,11 @@
   class="toolbar">
   <div class="top">
     <a
-      href="/magazines/sayi{index}/{tableOfContents}"
+      href="/dergiler/sayi{index}/{tableOfContents}"
       title="İçindekiler"
       on:click|preventDefault={() => {
         goToPage(tableOfContents);
-        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${tableOfContents}`);
+        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${tableOfContents}`);
       }}>
       <i class="fas fa-list-alt"></i>
     </a>
@@ -444,10 +444,10 @@
       <div class="left">
         <a 
           on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${prevPage}`);
+            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${prevPage}`);
             goToPage(prevPage);
           }}
-          href="/magazines/sayi{index}/{prevPage}" 
+          href="/dergiler/sayi{index}/{prevPage}" 
           title="Önceki Sayfa">
           <i class="fas fa-arrow-alt-circle-left" />
         </a>
@@ -456,10 +456,10 @@
       <div class="right">
         <a 
           on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/magazines/sayi${index}/${nextPage}`);
+            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${nextPage}`);
             goToPage(nextPage);
           }}
-          href="/magazines/sayi{index}/{nextPage}" 
+          href="/dergiler/sayi{index}/{nextPage}" 
           title="Sonraki Sayfa">
           <i class="fas fa-arrow-alt-circle-right" />
         </a>
