@@ -17,12 +17,12 @@
 
 /* eslint no-restricted-globals: 1 */
 
-const CACHE_NAME = 'galatadergisi-cache-v9';
+const CACHE_NAME = 'galatadergisi-cache-v10';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];
 const networkFirstList = [
-  /\/magazines\/sayi\d+\/pages$/,
+  /\/magazines\/\d+\/pages\/?$/,
 ];
 const cacheFirstList = [
   /^https:\/\/cdnjs\.cloudflare\.com\//,
@@ -106,12 +106,7 @@ self.addEventListener('install', (e) => {
     '/bundle.js',
     '/images/favicon.png',
     '/global.css',
-    '/index.html',
     '/legacy-player.js',
-    '/fonts/akaDora.ttf',
-    '/fonts/DistTh___.ttf',
-    '/fonts/sanskrit.ttf',
-    '/fonts/Stempel-Garamond-W01-Roman.woff',
     '/images/bant.jpg',
     '/images/first-shelf.png',
     '/images/header-logo.jpg',
