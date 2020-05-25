@@ -50,8 +50,9 @@ async function cacheFirst(req) {
   if (response) return response;
 
   const networkResponse = await fetch(req);
+  const isFailed = !networkResponse || (networkResponse.status !== 0 && networkResponse.status !== 200);
 
-  if (!networkResponse || networkResponse.status !== 200) {
+  if (isFailed) {
     return networkResponse;
   }
 
@@ -62,8 +63,9 @@ async function cacheFirst(req) {
 async function networkFirst(req) {
   try {
     const networkResponse = await fetch(req);
+    const isFailed = !networkResponse || (networkResponse.status !== 0 && networkResponse.status !== 200);
 
-    if (!networkResponse || networkResponse.status !== 200) {
+    if (isFailed) {
       const cacheResponse = await caches.match(req);
 
       if (!cacheResponse) {
