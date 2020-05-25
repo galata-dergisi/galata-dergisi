@@ -71,6 +71,7 @@
       if (page !== 1 && page !== numberOfPages) {
         if (Utils.isVisibleContent(content)) {
           content += `<div class="mPageNum"><div class="pageNumLeft"></div><div class="pageNum">${page}</div><div class="pageNumRight"></div></div>`;
+          content = `<div class="mMargin">${content}</div>`;
         }
 
         content = `<div class="gradient">${content}</div>`;
