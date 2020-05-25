@@ -17,6 +17,10 @@
    along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<script>
+  import GithubIcon from './GithubIcon.svelte';
+</script>
+
 <style>
   footer {
     font-family: "Playfair Display", serif;
@@ -42,5 +46,21 @@
   <a href="mailto:bilgi@galatadergisi.org">bilgi@galatadergisi.org</a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   İçerik göndererek katkıda bulunmak için <a href="/katkida-bulunun">tıklayın</a>.
+  <br />
+  Web sitesinin kodları bir özgür yazılım lisansı olan 
+    <a 
+      href="https://www.gnu.org/licenses/gpl-3.0.en.html"
+      target="_blank"
+      title="GNU Genel Kamu Lisansı">GNU Genel Kamu Lisansı
+    </a> ile lisanslıdır. 
+  <a 
+    href="https://github.com/mehmetb/galata-dergisi" 
+    title="Galata Dergisi Kaynak Kodları için GitHub Sayfası"
+    target="_blank"
+    >
+    <GithubIcon /> mehmetb/galata-dergisi
+  </a>
+  <br />
+  &copy; 2020 Galata Dergisi. Dergilerdeki hiçbir içerik izinsiz kopyalanamaz.
   <!--googleon: snippet-->
 </footer>
