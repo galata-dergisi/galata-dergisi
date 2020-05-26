@@ -1,0 +1,370 @@
+/*
+  Copyright 2020 Mehmet Baker
+
+  This file is part of galata-dergisi.
+
+  galata-dergisi is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  galata-dergisi is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
+*/
+
+.player_container {
+  width: 435px;
+  height: 100px;
+  border-radius: 10px;
+  background-color: #404040;
+  font-weight: initial !important;
+  font-family: initial !important;
+  font-size: initial !important;
+  line-height: initial !important;
+  user-select: none;
+}
+
+.player_details {
+  /*Song Name, Song Artist, Next-Prev Buttons, <hr>*/
+  width: 413px;
+  height: 40px;
+  margin-left: 13px;
+  margin-top: 5px;
+  margin-bottom: 0;
+  background-color: #404040;
+  position: absolute;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  line-height: default;
+  color: #ffffff;
+}
+
+#song_name {
+  font-weight: bold;
+}
+
+#song_artist {
+  font-style: italic;
+}
+
+.player_next {
+  /*Next Button*/
+  float: right;
+  background-color: #404040;
+  color: #fff;
+  top: -15px;
+  width: 15px;
+  height: 15px;
+  margin-right: 13px;
+  position: relative;
+  background-image: url(/images/legacy-player-icons/next.png);
+  background-repeat: no-repeat;
+}
+
+.player_next:hover {
+  cursor: pointer;
+}
+
+.player_previous {
+  /*Previous Button*/
+  float: right;
+  background-color: #404040;
+  color: #fff;
+  top: -15px;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  position: relative;
+  background-image: url(/images/legacy-player-icons/prev.png);
+  background-repeat: no-repeat;
+}
+
+.player_previous:hover {
+  cursor: pointer;
+}
+
+/* Player horizontal line */
+.horizontal_line {
+  height: 2px;
+  margin-top: 2px;
+  background: -webkit-linear-gradient(rightrgba(255, 255, 255, 0), rgba(255, 255, 255, 1)); /*Safari 5.1-6*/
+  background: -o-linear-gradient(left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)); /*Opera 11.1-12*/
+  background: -moz-linear-gradient(left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)); /*Fx 3.6-15*/
+  background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)); /*Standard*/
+}
+
+.player_play {
+  /*Play Button*/
+  float: left;
+  height: 50px;
+  width: 45px;
+  background-color: #404040;
+  border-radius: 5px;
+  position: relative;
+  top: 50px;
+  z-index: 0;
+}
+
+.player_play:hover {
+  background-color: rgba(0, 173, 239, 0.9);
+  cursor: pointer;
+}
+
+.player_play:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 13.5px;
+  left: 15px;
+  margin: 0 auto;
+  border-style: solid;
+  border-width: 9.5px 0 9.5px 17px;
+  border-color: transparent transparent transparent rgba(255, 255, 255, 1);
+}
+
+.player_pause {
+  /*Pause Button*/
+  float: left;
+  height: 50px;
+  width: 45px;
+  background-color: #404040;
+  background-image: url(/images/legacy-player-icons/pause.png);
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  position: relative;
+  top: 50px;
+}
+
+.player_pause:hover {
+  background-color: rgba(0, 173, 239, 0.9);
+  cursor: pointer;
+}
+
+.player_tracker_cont {
+  /*Tracker Container*/
+  position: relative;
+  display: table-cell;
+  vertical-align: middle;
+  min-height: 50px;
+  height: 50px;
+  width: 230px;
+  line-height: 50px;
+  margin-left: 50px;
+  float: left;
+  margin-left: 2px;
+  top: 50px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.player_tracker {
+  /*Empty Tracker*/
+  position: absolute;
+  top: 20px;
+  left: 0;
+  height: 5px;
+  width: 230px;
+  border-width: 1px;
+  border-color: #808080;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.player_tracker_loaded {
+  /*Buffered Audio*/
+  position: absolute;
+  top: 20px;
+  left: 0;
+  height: 5px;
+  width: 0;
+  border-width: 1px;
+  border-color: #808080;
+  border-style: solid;
+  border-radius: 5px;
+  background-color: #808080;
+  z-index: 1;
+}
+
+.player_tracker_loaded:hover {
+  cursor: pointer;
+}
+
+.player_tracker_current {
+  /*Played Audio*/
+  position: absolute;
+  top: 20px;
+  left: 0;
+  height: 5px;
+  width: 0px;
+  border-width: 1px;
+  border-color: #808080;
+  border-style: solid;
+  border-radius: 5px;
+  background-color: #ffffff;
+  z-index: 2;
+}
+
+.player_tracker_current:hover {
+  cursor: pointer;
+}
+
+.player_navigator {
+  /*Tracker Navigator*/
+  position: absolute;
+  top: 17px;
+  left: 0px;
+  height: 10px;
+  width: 20px;
+  border-width: 1px;
+  border-color: #fff;
+  border-style: solid;
+  border-radius: 10px;
+  background-color: #fff;
+  z-index: 3;
+}
+
+.vertical-centering {
+  /*Centering for the Current Time MM:SS*/
+  height: 50px;
+  position: relative;
+  float: left;
+  top: 48px;
+  width: 20px;
+  display: table-cell;
+  vertical-align: middle;
+  min-height: 50px;
+  line-height: 50px;
+  left: 4px;
+}
+
+.player_time {
+  /*MM:SS*/
+  font-weight: bolder;
+  font-size: 13px;
+  cursor: default;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.player_volume_button {
+  /*Volume Button*/
+  height: 50px;
+  width: 50px;
+  position: relative;
+  float: left;
+  top: 48px;
+  background-image: url(/images/legacy-player-icons/volume_max.png);
+  background-repeat: no-repeat;
+  left: 10px;
+}
+
+.player_volume_button:hover {
+  cursor: pointer;
+}
+
+.volume_cont {
+  /*Volume Bar Container*/
+  position: relative;
+  float: left;
+  height: 50px;
+  width: 75px;
+  top: 50px;
+}
+
+.player_volume_bar {
+  /*Empty Volume Bar*/
+  position: absolute;
+  top: 20px;
+  height: 5px;
+  width: 75px;
+  border-width: 1px;
+  border-color: #808080;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.player_volume_bar:hover {
+  cursor: pointer;
+}
+
+.player_volume_current {
+  /*Volume Bar Showing the Volume*/
+  position: absolute;
+  top: 20px;
+  height: 5px;
+  width: 0px;
+  border-width: 1px;
+  border-color: #808080;
+  border-style: solid;
+  border-radius: 5px;
+  background-color: #ffffff;
+  z-index: 2;
+}
+
+.player_volume_current:hover {
+  cursor: pointer;
+}
+
+.right_bound {
+  /*Needed to Calculate offset.right*/
+  width: 1px;
+  height: 50px;
+  float: left;
+  left: 3px;
+  position: relative;
+  top: 50px;
+}
+
+.player_show_time {
+  /*Tracker-Hover Time (The Bubble)*/
+  position: relative;
+  width: 30px;
+  height: 12px;
+  text-align: center;
+  line-height: 10px;
+  background-color: #fff;
+  border: 1px solid #666;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  border-radius: 3px;
+}
+
+.player_show_time:before {
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 12px;
+  top: 10px;
+  border: 4px solid;
+  border-color: #fff transparent transparent #fff;
+}
+
+.player_show_time:after {
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 12px;
+  top: 10px;
+  border: 2px solid;
+  border-color: #fff transparent transparent #fff;
+}
+
+#show_time {
+  /*Outer Div for Fixing the Time Bubble*/
+  display: none;
+  z-index: 1000;
+  position: fixed;
+}
