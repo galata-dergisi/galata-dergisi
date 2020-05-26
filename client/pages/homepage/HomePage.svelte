@@ -21,10 +21,10 @@
   import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
   import Utils from '../../lib/Utils.js';
-  import Footer from '../../components/Footer.svelte';
-  import Carousel from '../../components/Carousel.svelte';
-  import Magazine from '../../components/Magazine.svelte';
-  import MagazineThumbnail from '../../components/MagazineThumbnail.svelte';
+  import Footer from './components/Footer.svelte';
+  import Carousel from './components/Carousel.svelte';
+  import Magazine from './components/Magazine.svelte';
+  import MagazineThumbnail from './components/MagazineThumbnail.svelte';
 
   const allMagazines = [];
   let latestMagazine = null;
