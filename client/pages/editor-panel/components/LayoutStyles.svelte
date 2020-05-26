@@ -1,4 +1,4 @@
- <!-- 
+<!-- 
    Copyright 2020 Mehmet Baker
  
    This file is part of galata-dergisi.
@@ -17,30 +17,6 @@
    along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<script>
-  import LayoutStyles from '../LayoutStyles.svelte';
-  let content;
-</script>
-
-<LayoutStyles />
-
-<style lang="scss">
-  .gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    background: -webkit-gradient(linear, right top, left top, color-stop(0.95, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,0.15)));
-    background-image: linear-gradient(right, rgba(0,0,0,0) 95%, rgba(0,0,0,0.15) 100%);
-  }
+<style lang="scss" global>
+  @import '../../../styles/layout.scss';
 </style>
-
-<div class="page">
-  <div class="gradient">
-    <div class="mMargin">
-      <div bind:innerHTML={content} contenteditable="true"></div>
-    </div>
-  </div>
-</div>
