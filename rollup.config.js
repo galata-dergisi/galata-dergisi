@@ -21,6 +21,7 @@ try {
 
 fs.rmdirSync('public', { recursive: true });
 fs.mkdirSync('public/katkida-bulunun', { recursive: true });
+fs.mkdirSync('public/editor-panel', { recursive: true });
 
 function getCommonPlugins({ cssPath }) {
 	return [
@@ -103,6 +104,26 @@ export default [
 			copy({
 				targets: [
 					{ src: 'client/pages/contribute/katkida-bulunun.html', dest: 'public/katkida-bulunun', rename: 'index.html' },
+				],
+			}),
+		],
+		watch: {
+			clearScreen: false,
+		},
+	},
+	{
+		input: 'client/pages/editor-panel/editorPanel.js',
+		output: {
+			sourcemap: !production,
+			format: 'iife',
+			name: 'EditorPanel',
+			file: 'public/editor-panel/bundle.js',
+		},
+		plugins: [
+			...getCommonPlugins({ cssPath: 'public/editor-panel/bundle.css' }),
+			copy({
+				targets: [
+					{ src: 'client/pages/editor-panel/editor-panel.html', dest: 'public/editor-panel', rename: 'index.html' },
 				],
 			}),
 		],
