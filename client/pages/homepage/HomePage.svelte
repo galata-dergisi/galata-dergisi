@@ -21,6 +21,7 @@
   import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
   import Utils from '../../lib/Utils.js';
+  import Styles from './components/Styles.svelte';
   import Footer from './components/Footer.svelte';
   import Carousel from './components/Carousel.svelte';
   import Magazine from './components/Magazine.svelte';
@@ -206,6 +207,9 @@
     background-position-x: -13px;
   }
 </style>
+
+<!-- Global Styles -->
+<Styles />
 
 <svelte:head>
   <title>{loadedMagazine ? `Sayı ${loadedMagazine.index} | Galata Dergisi` : 'Galata Dergisi'}</title>

@@ -4,9 +4,20 @@ import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
+import autoprefixer from 'autoprefixer';
+import sveltePreprocess from 'svelte-preprocess';
 import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
+
+try {
+	fs.rmdirSync('public', { recursive: true });
+} catch (ex) {
+	if (ex.code !== 'ENOENT') {
+		console.trace(ex);
+		process.exit(1);
+	}
+}
 
 fs.rmdirSync('public', { recursive: true });
 fs.mkdirSync('public/katkida-bulunun', { recursive: true });
@@ -21,6 +32,11 @@ function getCommonPlugins({ cssPath }) {
 			css: (css) => {
 				css.write(cssPath, !production);
 			},
+			preprocess: sveltePreprocess({
+				postcss: {
+					plugins: [autoprefixer],
+				},
+			}),
 		}),
 
 		// If you have external dependencies installed from

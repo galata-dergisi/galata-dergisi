@@ -1,0 +1,364 @@
+/*
+  Copyright 2020 Mehmet Baker
+
+  This file is part of galata-dergisi.
+
+  galata-dergisi is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  galata-dergisi is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@font-face {
+  font-family: "Sanskrit";
+  src: url("../fonts/sanskrit.ttf");
+}
+
+@font-face {
+  font-family: "akaDora";
+  src: url("../fonts/akaDora.ttf");
+}
+
+@font-face {
+  font-family: "Stempel-Garamond-W01-Roman";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../fonts/Stempel-Garamond-W01-Roman.woff") format("woff");
+}
+
+.magazine {
+  width: 800px;
+  height: 500px;
+
+  .turn-page {
+    background-color: white;
+  }
+
+  .cover {
+    background: #333;
+
+    h1 {
+      color: white;
+      text-align: center;
+      font-size: 50px;
+      line-height: 500px;
+      margin: 0;
+    }
+  }
+
+  .data {
+    text-align: center;
+    font-size: 40px;
+    color: #999;
+    line-height: 500px;
+  }
+}
+
+ul.uDaghan,
+ul.suratKusurat {
+  font-family: "Lucida Console", monospace;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  line-height: 42px;
+}
+
+ul.suratKusurat {
+  padding-left: 20px;
+
+  li {
+    list-style-type: circle;
+  }
+}
+
+h1 {
+  font-family: "Lucida Console", monospace;
+  color: #444;
+  font-weight: bold;
+  font-size: 15px;
+
+  &.mContentsTitle {
+    font: 38px "akaDora", helvetica, arial;
+    font-weight: lighter;
+    margin: 20px 0;
+    color: #333;
+
+    -webkit-text-fill-color: #333;
+    -webkit-text-stroke-color: white;
+    -webkit-text-stroke-width: 0.005em;
+  }
+
+  &.mTitle {
+    font-family: "Lucida Console", monospace;
+    color: #444;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+  }
+
+  &.mAuthor {
+    padding-top: 15px;
+    font-family: "Lucida Console", monospace;
+    color: #444;
+    font-size: 13px;
+    text-align: left;
+  }
+}
+
+h2 {
+  font-family: "Lucida Console", monospace;
+  color: #444;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+h3 {
+  font-family: "Lucida Console", monospace;
+  color: #444;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+pre,
+p {
+  font-family: "Lucida Console", monospace;
+  font-size: 12px;
+  line-height: 22px;
+}
+
+p {
+  &.mNesir {
+    text-indent: 30px;
+  }
+
+  &.mNesir2 {
+    text-indent: initial;
+  }
+
+  &.mSiir {
+    padding-bottom: 10px;
+  }
+
+  &.mSiir2 {
+    padding-bottom: 10px;
+    padding-left: 30px;
+  }
+
+  &.mCenter {
+    text-align: center;
+  }
+
+  &.mRight {
+    text-align: right;
+  }
+}
+
+div {
+  &.mMargin {
+    width: 440px;
+    height: 700px;
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 40px;
+  }
+
+  &.mHR {
+    position: relative;
+    height: 2px;
+    background: -webkit-linear-gradient(left, white, black, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(right, white, black, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(right, white, black, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to right, white, black, white); /* Standard syntax */
+  }
+}
+
+.mKunye {
+  height: 700px;
+  padding-top: 100px;
+  font-family: "Lucida Console", monospace;
+  font-size: 13px;
+}
+
+.mKunyeTable {
+  padding-left: 123px;
+
+  i.fab,
+  i.fas {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    color: #444;
+    font-size: 32px;
+  }
+}
+
+.mKunyeTitle {
+  padding-right: 20px;
+  padding-bottom: 10px;
+  padding-top: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.mKunyeText {
+  text-align: center;
+}
+
+.mIcKapak {
+  width: 100%;
+  height: 100px;
+  background: url(/images/bant.jpg);
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.mContents a {
+  position: relative;
+  float: left;
+  width: 100%;
+  clear: both;
+  text-decoration: none;
+  color: #333;
+  margin: 0px 0;
+  padding: 0 3px;
+  font-family: "Lucida Console", monospace;
+  line-height: 22px;
+  font-size: 12px;
+
+  &:hover {
+    position: relative;
+    background: #cad1ee;
+    float: left;
+    width: 100%;
+    clear: both;
+    text-decoration: none;
+    border-radius: 10px;
+  }
+}
+
+.mContentsHeadings {
+  font-family: "Lucida Console", monospace;
+  font-size: 12px;
+  font-weight: bold;
+  height: 50px;
+  padding: 0 3px;
+}
+
+.mContentsAuthors {
+  font-family: "Lucida Console", monospace;
+  font-size: 12px;
+  float: right;
+}
+
+.mIcResim {
+  border: 1px solid #444;
+  width: 400px;
+  height: 560px;
+}
+
+.mPageNum {
+  font-family: "Lucida Console", monospace;
+  font-size: 12px;
+  text-align: center;
+  width: 440px;
+  position: absolute;
+  top: 665px;
+  left: 0px;
+}
+
+.pageNumLeft {
+  float: left;
+  position: relative;
+  height: 1px;
+  margin-left: 235px;
+  width: 10px;
+  top: 4.5px;
+  background: -webkit-linear-gradient(left, white, black); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, white, black); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, white, black); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, white, black); /* Standard syntax */
+}
+
+.pageNum {
+  float: left;
+  position: relative;
+  margin-left: 5px;
+}
+
+.pageNumRight {
+  float: left;
+  position: relative;
+  height: 1px;
+  width: 10px;
+  top: 4.5px;
+  margin-left: 5px;
+  background: -webkit-linear-gradient(right, white, black); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(left, white, black); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(left, white, black); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to left, white, black); /* Standard syntax */
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: #698145;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@keyframes loader-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: calc(50% - 40px);
+  left: calc(50% - 40px);
+
+  div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    animation: loader-animation 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #d8cdcd transparent transparent transparent;
+
+    &:nth-child(1) {
+      animation-delay: -0.45s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: -0.3s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: -0.15s;
+    }
+  }
+}
