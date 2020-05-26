@@ -37,7 +37,7 @@
     "build": "rollup -c",
     "autobuild": "rollup -c -w",
     "dev": "run-p start:dev autobuild",
-    "lint": "eslint \"client/**/*.js\" \"server/**/*.js\"",
+    "lint": "eslint \"client/**/*.js\" \"server/**/*.js\" config.example.js rollup.config.js",
     "start": "sirv public --single",
     "start:dev": "nodemon server/server.js"
   },

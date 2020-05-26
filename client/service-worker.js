@@ -28,7 +28,7 @@ const cacheFirstList = [
   /^https:\/\/cdnjs\.cloudflare\.com\//,
   /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
   /^https:\/\/kit(?:-free)\.fontawesome\.com\//,
-]
+];
 
 async function cleanUpObseleteCaches() {
   try {

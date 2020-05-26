@@ -11,12 +11,12 @@ import { terser } from 'rollup-plugin-terser';
 const production = !process.env.ROLLUP_WATCH;
 
 try {
-	fs.rmdirSync('public', { recursive: true });
+  fs.rmdirSync('public', { recursive: true });
 } catch (ex) {
-	if (ex.code !== 'ENOENT') {
-		console.trace(ex);
-		process.exit(1);
-	}
+  if (ex.code !== 'ENOENT') {
+    console.trace(ex);
+    process.exit(1);
+  }
 }
 
 fs.rmdirSync('public', { recursive: true });
@@ -24,111 +24,109 @@ fs.mkdirSync('public/katkida-bulunun', { recursive: true });
 fs.mkdirSync('public/editor-panel', { recursive: true });
 
 function getCommonPlugins({ cssPath }) {
-	return [
-		svelte({
-			// enable run-time checks when not in production
-			dev: !production,
-			// we'll extract any component CSS out into
-			// a separate file — better for performance
-			css: (css) => {
-				css.write(cssPath, !production);
-			},
-			preprocess: sveltePreprocess({
-				postcss: {
-					plugins: [autoprefixer],
-				},
-			}),
-		}),
+  return [
+    svelte({
+      // enable run-time checks when not in production
+      dev: !production,
+      // we'll extract any component CSS out into
+      // a separate file — better for performance
+      css: (css) => {
+        css.write(cssPath, !production);
+      },
+      preprocess: sveltePreprocess({
+        postcss: {
+          plugins: [autoprefixer],
+        },
+      }),
+    }),
 
-		// If you have external dependencies installed from
-		// npm, you'll most likely need these plugins. In
-		// some cases you'll need additional configuration —
-		// consult the documentation for details:
-		// https://github.com/rollup/rollup-plugin-commonjs
-		resolve({
-			browser: true,
-			dedupe: (importee) => {
-				return importee === 'svelte' || importee.startsWith('svelte/');
-			},
-		}),
-		commonjs(),
+    // If you have external dependencies installed from
+    // npm, you'll most likely need these plugins. In
+    // some cases you'll need additional configuration —
+    // consult the documentation for details:
+    // https://github.com/rollup/rollup-plugin-commonjs
+    resolve({
+      browser: true,
+      dedupe: (importee) => importee === 'svelte' || importee.startsWith('svelte/'),
+    }),
+    commonjs(),
 
-		// If we're building for production (npm run build
-		// instead of npm run dev), minify
-		production && terser(),
-	];
+    // If we're building for production (npm run build
+    // instead of npm run dev), minify
+    production && terser(),
+  ];
 }
 
 export default [
-	{
-		input: 'client/pages/homepage/index.js',
-		output: {
-			sourcemap: !production,
-			format: 'iife',
-			name: 'GalataDergisi',
-			file: 'public/bundle.js',
-		},
-		plugins: [
-			...getCommonPlugins({ cssPath: 'public/bundle.css' }),
+  {
+    input: 'client/pages/homepage/index.js',
+    output: {
+      sourcemap: !production,
+      format: 'iife',
+      name: 'GalataDergisi',
+      file: 'public/bundle.js',
+    },
+    plugins: [
+      ...getCommonPlugins({ cssPath: 'public/bundle.css' }),
 
-			// Watch the `public` directory and refresh the
-			// browser on changes when not in production
-			!production && livereload('public'),
+      // Watch the `public` directory and refresh the
+      // browser on changes when not in production
+      !production && livereload('public'),
 
-			copy({
-				targets: [
-					{ src: 'client/images', dest: 'public' },
-					{ src: 'client/fonts', dest: 'public' },
-					{ src: 'client/pages/homepage/index.html', dest: 'public' },
-					{ src: 'client/pages/homepage/global.css', dest: 'public' },
-					{ src: 'client/service-worker.js', dest: 'public' },
-					{ src: 'client/lib/legacy-player.js', dest: 'public' },
-					{ src: 'client/audio', dest: 'public' },
-				],
-			}),
-		],
-		watch: {
-			clearScreen: false,
-		},
-	},
-	{
-		input: 'client/pages/contribute/contribute.js',
-		output: {
-			sourcemap: !production,
-			format: 'iife',
-			name: 'Contribute',
-			file: 'public/katkida-bulunun/bundle.js',
-		},
-		plugins: [
-			...getCommonPlugins({ cssPath: 'public/katkida-bulunun/bundle.css' }),
-			copy({
-				targets: [
-					{ src: 'client/pages/contribute/katkida-bulunun.html', dest: 'public/katkida-bulunun', rename: 'index.html' },
-				],
-			}),
-		],
-		watch: {
-			clearScreen: false,
-		},
-	},
-	{
-		input: 'client/pages/editor-panel/editorPanel.js',
-		output: {
-			sourcemap: !production,
-			format: 'iife',
-			name: 'EditorPanel',
-			file: 'public/editor-panel/bundle.js',
-		},
-		plugins: [
-			...getCommonPlugins({ cssPath: 'public/editor-panel/bundle.css' }),
-			copy({
-				targets: [
-					{ src: 'client/pages/editor-panel/editor-panel.html', dest: 'public/editor-panel', rename: 'index.html' },
-				],
-			}),
-		],
-		watch: {
-			clearScreen: false,
-		},
-	},
+      copy({
+        targets: [
+          { src: 'client/images', dest: 'public' },
+          { src: 'client/fonts', dest: 'public' },
+          { src: 'client/pages/homepage/index.html', dest: 'public' },
+          { src: 'client/pages/homepage/global.css', dest: 'public' },
+          { src: 'client/service-worker.js', dest: 'public' },
+          { src: 'client/lib/legacy-player.js', dest: 'public' },
+          { src: 'client/audio', dest: 'public' },
+        ],
+      }),
+    ],
+    watch: {
+      clearScreen: false,
+    },
+  },
+  {
+    input: 'client/pages/contribute/contribute.js',
+    output: {
+      sourcemap: !production,
+      format: 'iife',
+      name: 'Contribute',
+      file: 'public/katkida-bulunun/bundle.js',
+    },
+    plugins: [
+      ...getCommonPlugins({ cssPath: 'public/katkida-bulunun/bundle.css' }),
+      copy({
+        targets: [
+          { src: 'client/pages/contribute/katkida-bulunun.html', dest: 'public/katkida-bulunun', rename: 'index.html' },
+        ],
+      }),
+    ],
+    watch: {
+      clearScreen: false,
+    },
+  },
+  {
+    input: 'client/pages/editor-panel/editorPanel.js',
+    output: {
+      sourcemap: !production,
+      format: 'iife',
+      name: 'EditorPanel',
+      file: 'public/editor-panel/bundle.js',
+    },
+    plugins: [
+      ...getCommonPlugins({ cssPath: 'public/editor-panel/bundle.css' }),
+      copy({
+        targets: [
+          { src: 'client/pages/editor-panel/editor-panel.html', dest: 'public/editor-panel', rename: 'index.html' },
+        ],
+      }),
+    ],
+    watch: {
+      clearScreen: false,
+    },
+  },
 ];
