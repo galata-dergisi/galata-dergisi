@@ -11,7 +11,10 @@ import { terser } from 'rollup-plugin-terser';
 const production = !process.env.ROLLUP_WATCH;
 
 try {
-	fs.rmdirSync('public', { recursive: true });
+	if (!production) {
+		console.log("Removing 'public'...");
+		fs.rmdirSync('public', { recursive: true });
+	}
 } catch (ex) {
 	if (ex.code !== 'ENOENT') {
 		console.trace(ex);
