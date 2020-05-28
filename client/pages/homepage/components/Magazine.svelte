@@ -232,7 +232,7 @@
   }
 </script>
 
-<style>
+<style lang="scss">
   .container {
     position: absolute !important;
     top: 90px;
@@ -240,11 +240,12 @@
     height: 750px;
     width: 100%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
   }
 
   .center {
     position: absolute;
-    left: calc((100% - 960px) / 2);
     height: 720px;
     padding-top: 20px;
   }
@@ -254,157 +255,134 @@
     top: 40px;
     left: 0;
     right: 0;
-    text-align: center;
     height: 70px;
-  }
 
-  .toolbar .top {
-    width: 1000px;
-    margin: 0 auto;
-    height: 32px;
-  }
+    .top {
+      width: 500px;
+      margin: 0 auto;
+      height: 32px;
+      display: flex;
 
-  .toolbar .top {
-    padding-left: 85px;
-  }
+      > a, > span {
+        color: #7f7f7f;
+        flex: 1;
+        text-align: center;
+      }
 
-  .toolbar .bottom {
-    position: absolute;
-    width: 1000px;
-    line-height: 38px;
-    left: calc((100% - 960px) / 2);
-    font-size: 32px;
-  }
+      > a.disabled {
+        color: #ccc;
+        pointer-events: none;
+      }
 
-  .toolbar .bottom.hidden {
-    display: none;
-  }
+      @media (prefers-reduced-motion: no-preference) {
+        a.next-button, a.prev-button {
+          transition: transform .15s ease-in-out;
+        }
+      }
 
-  .toolbar .top > a, .toolbar .top > span {
-    margin-right: 30px;
-  }
+      a.next-button.move {
+        transform: translateX(250px);
+      }
+      
+      a.prev-button.move {
+        transform: translateX(-250px);
+      }
+    }
 
-  .toolbar .bottom .left {
-    float: left;
-    padding-left: 20px;
-  }
+    i {
+      font-size: 32px;
 
-  .toolbar .bottom .right {
-    float: right;
-    padding-right: 20px;
-  }
+      &:hover {
+        color: #525252;
+      }
 
-  .toolbar i {
-    color: #7f7f7f;
-    font-size: 32px;
-  }
+      &.fa-facebook-f {
+        width: 32px;
+        text-align: center;
+      }
+    }
 
-  .toolbar .bottom .wrapper {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: -20px;
-  }
-
-  .toolbar i:hover {
-    color: #525252;
-  }
-
-  .toolbar span {
-    display: inline-block;
-    width: 50px;
-    cursor: pointer;
+    span {
+      display: inline-block;
+      cursor: pointer;
+    }
   }
 
   .magazine {
     width: 960px;
     height: 700px;
-  }
 
-  .magazine.move-left {
-    transform: translateX(-250px) !important;
-    box-shadow: none;
-  }
+    &.move-left {
+      transform: translateX(-250px) !important;
+      box-shadow: none;
 
-  .magazine.move-left.last-page {
-    transform: translateX(250px) !important;
-  }
+      &.last-page {
+        transform: translateX(250px) !important;
+      }
+    }
 
-  .magazine :global(.page) {
-    width:500px;
-	  height:700px;
-	  background:white;
+    :global(.page) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 500px;
+      height: 700px;
+      background:white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    
+    :global(.odd .gradient) {
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      background:-webkit-gradient(linear, right top, left top, color-stop(0.95, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,0.15)));
+      background-image: linear-gradient(right, rgba(0,0,0,0) 95%, rgba(0,0,0,0.15) 100%);
+    }
 
-	  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-	  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-	  -ms-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-	  -o-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-	  box-shadow: 0 0 5px rgba(0,0,0,0.2);
-  }
+    :global(.even .gradient) {
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      background:-webkit-gradient(linear, left top, right top, color-stop(0.95, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,0.2)));
+      background-image:linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
+    }
 
-  .magazine :global(.odd .gradient) {
-    position:absolute;
-  	top:0;
-  	left:0;
-  	width:100%;
-  	height:100%;
-  	z-index:0;
-  	background:-webkit-gradient(linear, right top, left top, color-stop(0.95, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,0.15)));
-  	background-image:-webkit-linear-gradient(right,rgba(0,0,0,0) 95%, rgba(0,0,0,0.15) 100%);
-  	background-image:-moz-linear-gradient(right, rgba(0,0,0,0) 95%, rgba(0,0,0,0.15) 100%);
-  	background-image:-ms-linear-gradient(right, rgba(0,0,0,0) 95%, rgba(0,0,0,0.15) 100%);
-  	background-image:-o-linear-gradient(right, rgba(0,0,0,0) 95%, rgba(0,0,0,0.15) 100%);
-  	background-image:linear-gradient(right, rgba(0,0,0,0) 95%, rgba(0,0,0,0.15) 100%);
-  }
+    :global(.shadow) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      width: 1000px;
+      height: 700px;
+      box-shadow: 0 0 20px #ccc;
 
-  .magazine :global(.even .gradient) {
-  	position:absolute;
-  	top:0;
-  	left:0;
-  	width:100%;
-  	height:100%;
-  	z-index:0;
-  	background:-webkit-gradient(linear, left top, right top, color-stop(0.95, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,0.2)));
-  	background-image:-webkit-linear-gradient(left,rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
-  	background-image:-moz-linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
-  	background-image:-ms-linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
-  	background-image:-o-linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
-  	background-image:linear-gradient(left, rgba(0,0,0,0) 95%, rgba(0,0,0,0.2) 100%);
-  }
+      &.partial-hidden {
+        &.first, &.left {
+          left: 500px;
+          width: 500px;
+        }
 
-  .magazine :global(.shadow) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-    width: 1000px;
-    height: 700px;
-    box-shadow: 0 0 20px #ccc;
-  }
+        &.last, &.right {
+          width: 500px;
+        }
+      }
+    }
 
-  .magazine :global(.shadow).partial-hidden.first, .magazine :global(.shadow).partial-hidden.left {
-    left: 500px;
-    width: 500px;
-  }
+    :global(.zoom-in .gradient) {
+      display: none;
+    }
 
-  .magazine :global(.shadow).partial-hidden.right, .magazine :global(.shadow).partial-hidden.last {
-    width: 500px;
-  }
-
-  .magazine :global(.page) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-  }
-
-  .magazine :global(.zoom-in .gradient) {
-    display: none;
-  }
-
-  .magazine :global(.zoom-in .next-button, .zoom-in .previous-button) {
-    display: none;
+    :global(.zoom-in .next-button, .zoom-in .previous-button) {
+      display: none;
+    }
   }
 </style>
 
@@ -413,6 +391,19 @@
   out:fly={{ duration: 300, y: -90 }}
   class="toolbar">
   <div class="top">
+    <a 
+      class="prev-button"
+      class:disabled={currentPage === 1}
+      class:move={!moveLeft}
+      on:click|preventDefault={() => {
+        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${prevPage}`);
+        goToPage(prevPage);
+      }}
+      href="/dergiler/sayi{index}/{prevPage}" 
+      title="Önceki Sayfa">
+      <i class="fas fa-arrow-alt-circle-left" />
+    </a>
+
     <a
       href="/dergiler/sayi{index}/{tableOfContents}"
       title="İçindekiler"
@@ -446,34 +437,19 @@
     >
       <i class="fas fa-times-circle fa-2x"></i>
     </span>
-  </div>
 
-  <div class="bottom" class:hidden={moveLeft}>
-    <div class="wrapper">
-      <div class="left">
-        <a 
-          on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${prevPage}`);
-            goToPage(prevPage);
-          }}
-          href="/dergiler/sayi{index}/{prevPage}" 
-          title="Önceki Sayfa">
-          <i class="fas fa-arrow-alt-circle-left" />
-        </a>
-      </div>
-
-      <div class="right">
-        <a 
-          on:click|preventDefault={() => {
-            window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${nextPage}`);
-            goToPage(nextPage);
-          }}
-          href="/dergiler/sayi{index}/{nextPage}" 
-          title="Sonraki Sayfa">
-          <i class="fas fa-arrow-alt-circle-right" />
-        </a>
-      </div>
-    </div>
+    <a 
+      class="next-button"
+      class:disabled={nextPage === currentPage}
+      class:move={!moveLeft}
+      on:click|preventDefault={() => {
+        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${nextPage}`);
+        goToPage(nextPage);
+      }}
+      href="/dergiler/sayi{index}/{nextPage}" 
+      title="Sonraki Sayfa">
+      <i class="fas fa-arrow-alt-circle-right" />
+    </a>
   </div>
 </div>
 
