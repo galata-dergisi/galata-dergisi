@@ -98,12 +98,37 @@
     }
   }
 
+  function onKeyDown(e) {
+    switch (e.key) {
+      case 'ArrowLeft': {
+        if (loadedMagazine) {
+          loadedMagazineSvelteInstance.goToPreviousPage();
+        } 
+
+        break;
+      }
+
+      case 'ArrowRight': {
+        if (loadedMagazine) {
+          loadedMagazineSvelteInstance.goToNextPage();
+        }
+
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
   onMount(async () => {
     // Retrieve list of magazines from server
     await getMagazines();
 
     // If current URL is pointing to a magazine then load it
     loadMagazineFromWindowLocation();
+
+    document.addEventListener('keydown', onKeyDown);
   });
 
   window.gotoMagazinePage = function (magazineIndex, page) {

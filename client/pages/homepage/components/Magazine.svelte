@@ -205,6 +205,14 @@
     magazineInstance.turn('page', pageNum);
   }
 
+  export function goToNextPage() {
+    goToPage(nextPage);
+  }
+
+  export function goToPreviousPage() {
+    goToPage(prevPage);
+  }
+
   function close() {
     dispatch("unloadmagazine");
     window.history.pushState({}, 'Galata Dergisi', '/');
