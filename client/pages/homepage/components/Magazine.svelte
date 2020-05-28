@@ -132,7 +132,7 @@
       e.preventDefault();
       e.stopPropagation();
       dispatch('loadmagazine', indexAndPage);
-      window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, href);
+      window.history.replaceState({}, `Sayı ${index} | Galata Dergisi`, href);
     }
   }
 
@@ -179,6 +179,7 @@
         when: {
           turning: function(e, page, view) {
             ensureRange(page);
+            window.history.replaceState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${page}`);
           },
           turned: function(e, page) {
             if (isLoaded) {
@@ -192,7 +193,10 @@
 
       if (landingPage !== 1) {
         goToPage(landingPage);
+        return;
       }
+
+      window.history.replaceState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${landingPage}`);
     } catch (ex) {
       console.trace(ex);
       alert('Dergi yüklenirken bir hata oluştu!');
@@ -203,6 +207,7 @@
     pageNum = Number(pageNum);
     ensureRange(pageNum);
     magazineInstance.turn('page', pageNum);
+    window.history.replaceState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${pageNum}`);
   }
 
   export function goToNextPage() {
@@ -215,7 +220,7 @@
 
   function close() {
     dispatch("unloadmagazine");
-    window.history.pushState({}, 'Galata Dergisi', '/');
+    window.history.replaceState({}, 'Galata Dergisi', '/');
   }
 
   function shareOnFacebook() {
@@ -396,7 +401,6 @@
       class:disabled={currentPage === 1}
       class:move={!moveLeft}
       on:click|preventDefault={() => {
-        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${prevPage}`);
         goToPage(prevPage);
       }}
       href="/dergiler/sayi{index}/{prevPage}" 
@@ -409,7 +413,6 @@
       title="İçindekiler"
       on:click|preventDefault={() => {
         goToPage(tableOfContents);
-        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${tableOfContents}`);
       }}>
       <i class="fas fa-list-alt"></i>
     </a>
@@ -443,7 +446,6 @@
       class:disabled={nextPage === currentPage}
       class:move={!moveLeft}
       on:click|preventDefault={() => {
-        window.history.pushState({}, `Sayı ${index} | Galata Dergisi`, `/dergiler/sayi${index}/${nextPage}`);
         goToPage(nextPage);
       }}
       href="/dergiler/sayi{index}/{nextPage}" 
