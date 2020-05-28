@@ -7,6 +7,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "autoprefixer": "^9.8.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
@@ -17,7 +18,9 @@
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^5.3.0",
-    "svelte": "^3.0.0"
+    "sass": "^1.26.5",
+    "svelte": "^3.0.0",
+    "svelte-preprocess": "^3.7.4"
   },
   "dependencies": {
     "compression": "^1.7.4",
@@ -29,13 +32,16 @@
     "uuid": "^8.0.0"
   },
   "scripts": {
+    "cloc": "cloc --exclude-dir=node_modules,public,sql-backups,uploads,utility-scripts,vendor,.vscode --force-lang=\"HTML\",svelte .",
     "server": "node server/server.js",
     "build": "rollup -c",
     "autobuild": "rollup -c -w",
     "dev": "run-p start:dev autobuild",
+    "dev-svc": "run-p start:dev-svc autobuild",
     "lint": "eslint \"client/**/*.js\" \"server/**/*.js\"",
     "start": "sirv public --single",
-    "start:dev": "nodemon server/server.js"
+    "start:dev": "nodemon server/server.js --disable-services",
+    "start:dev-svc": "nodemon server/server.js"
   },
   "nodemonConfig": {
     "ignore": [

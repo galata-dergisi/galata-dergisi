@@ -133,11 +133,20 @@ process.on('SIGTERM', () => cleanup('SIGTERM'));
 process.on('SIGHUP', () => cleanup('SIGHUP'));
 process.once('SIGUSR2', () => cleanup('SIGUSR2'));
 
+function areServicesDisabled() {
+  const args = Array.from(process.argv);
+  return args.includes('--disable-services');
+}
+
 // Immediately invoked function: main()
 (async function main() {
   try {
     const settings = await getSettings();
-    await initServices(settings);
+
+    if (!areServicesDisabled()) {
+      await initServices(settings);
+    }
+
     await initWebServer(settings);
   } catch (ex) {
     console.trace(ex);

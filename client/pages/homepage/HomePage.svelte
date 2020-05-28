@@ -21,10 +21,11 @@
   import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
   import Utils from '../../lib/Utils.js';
-  import Footer from '../../components/Footer.svelte';
-  import Carousel from '../../components/Carousel.svelte';
-  import Magazine from '../../components/Magazine.svelte';
-  import MagazineThumbnail from '../../components/MagazineThumbnail.svelte';
+  import Styles from './components/Styles.svelte';
+  import Footer from './components/Footer.svelte';
+  import Carousel from './components/Carousel.svelte';
+  import Magazine from './components/Magazine.svelte';
+  import MagazineThumbnail from './components/MagazineThumbnail.svelte';
 
   const allMagazines = [];
   let latestMagazine = null;
@@ -97,12 +98,37 @@
     }
   }
 
+  function onKeyDown(e) {
+    switch (e.key) {
+      case 'ArrowLeft': {
+        if (loadedMagazine) {
+          loadedMagazineSvelteInstance.goToPreviousPage();
+        } 
+
+        break;
+      }
+
+      case 'ArrowRight': {
+        if (loadedMagazine) {
+          loadedMagazineSvelteInstance.goToNextPage();
+        }
+
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
   onMount(async () => {
     // Retrieve list of magazines from server
     await getMagazines();
 
     // If current URL is pointing to a magazine then load it
     loadMagazineFromWindowLocation();
+
+    document.addEventListener('keydown', onKeyDown);
   });
 
   window.gotoMagazinePage = function (magazineIndex, page) {
@@ -206,6 +232,9 @@
     background-position-x: -13px;
   }
 </style>
+
+<!-- Global Styles -->
+<Styles />
 
 <svelte:head>
   <title>{loadedMagazine ? `Sayı ${loadedMagazine.index} | Galata Dergisi` : 'Galata Dergisi'}</title>

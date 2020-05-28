@@ -85,6 +85,13 @@
     }
   }
 
+  function onAssetTypeChange() {
+    if (assetTypeInput.value) {
+      const { input } = M.FormSelect.getInstance(assetTypeInput);
+      input.setCustomValidity('');
+    }
+  }
+
   if (window.matchMedia) {
     darkMode = matchMedia('(prefers-color-scheme: dark').matches;
   }
@@ -229,12 +236,7 @@
               bind:value={assetType} 
               bind:this={assetTypeInput} 
               name="assetType"
-              on:change={() => {
-                if (assetTypeInput.value) {
-                  const { input } = M.FormSelect.getInstance(assetTypeInput);
-                  input.setCustomValidity('');
-                }
-              }}
+              on:change={onAssetTypeChange}
               >
               <option value="" disabled="disabled" selected="selected">Seçiniz...</option>
               <option value="siir">Şiir</option>

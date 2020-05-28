@@ -26,8 +26,9 @@
 
   // Just to suppress Svelte's warning
   export let tableOfContents;
+  let silencer = tableOfContents;
 
-  import Utils from '../lib/Utils.js';
+  import Utils from '../../../lib/Utils.js';
   import { createEventDispatcher } from 'svelte';
 
   let anchorElement;

@@ -17,7 +17,7 @@
 
 /* eslint no-restricted-globals: 1 */
 
-const CACHE_NAME = 'galatadergisi-cache-v11';
+const CACHE_NAME = 'galatadergisi-cache-v12';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];
@@ -129,10 +129,6 @@ self.addEventListener('fetch', (e) => {
       }
     }
 
-    return e.respondWith(networkFirst(e.request));
-  }
-
-  if (/(localhost)|(127\.0\.0\.1)/.test(currentOrigin)) {
     return e.respondWith(networkFirst(e.request));
   }
 
