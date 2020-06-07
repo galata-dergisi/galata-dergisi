@@ -18,7 +18,7 @@
 class Utils {
   /**
    * Constructs this sentence: There is/are ${count} ${itemName}(s).
-   * @param {number} count Number of items 
+   * @param {number} count Number of items
    * @param {string} itemName Name of items
    * @returns {string}
    */
@@ -42,6 +42,17 @@ class Utils {
     settings.smtpSecure = Buffer.from(settings.smtpSecure)[0] === 1;
 
     return settings;
+  }
+
+  /**
+   * This method returns long month name.
+   * Unfortunately we can't use Intl.DateTimeFormat since node comes with en-US only.
+   * @param {Date} date
+   * @returns {string} Month name (long)
+   */
+  static getLocalMonth(date) {
+    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    return months[date.getMonth()];
   }
 }
 
