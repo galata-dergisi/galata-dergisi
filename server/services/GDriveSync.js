@@ -25,6 +25,7 @@ const fsPromises = fs.promises;
 
 // 1 minute
 const SYNC_INTERVAL = 60 * 1000;
+const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 
 class GDriveSync {
   constructor(params) {
@@ -177,21 +178,67 @@ class GDriveSync {
     return false;
   }
 
-  async uploadAsset(asset) {
+  async ensureFolderInDrive(rootFolderId, folderName) {
+    console.log(`Querying Google Drive to check if "${folderName}" exists...`);
+
+    const { data: { files }} = await this.drive.files.list({
+      q: `mimeType = '${FOLDER_MIME_TYPE}' and '${rootFolderId}' in parents and name = '${folderName}'`,
+      pageSize: 1,
+      fields: 'nextPageToken, files(id, name)',
+    });
+
+    if (files.length === 1) {
+      const [{ id }] = files;
+      console.log(`Found "${folderName}" in Google Drive. Returning its ID: ${id}`);
+      return id;
+    }
+
+    console.log(`"${folderName}" doesn't exist. Creating it...`);
+
+    const { data: file } = await this.drive.files.create({
+      resource: {
+        name: folderName,
+        mimeType: FOLDER_MIME_TYPE,
+        parents: [rootFolderId],
+      },
+      fields: 'id',
+    });
+
+    console.log(`"${folderName}" has been created. Returning its ID: ${file.id}`);
+
+    return file.id;
+  }
+
+  async getDriveFolderId() {
     let conn;
 
     try {
+      conn = await this.databasePool.getConnection();
+      const { driveRootFolder } = await Utils.getSettings(conn);
+      const date = new Date();
+
+      const yearFolderId = await this.ensureFolderInDrive(driveRootFolder, date.getFullYear());
+      const monthFolderId = await this.ensureFolderInDrive(yearFolderId, Utils.getLocalMonth(date));
+      return monthFolderId;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  }
+
+  async uploadAsset(asset) {
+    try {
       console.log(`Uploading asset #${asset.id}: ${asset.filename}`);
 
-      conn = await this.databasePool.getConnection();
       const fileName = `${asset.title} - ${asset.contributor}${path.extname(asset.filename)}`;
 
-      const { driveRootFolder } = await Utils.getSettings(conn);
+      const driveFolderId = await this.getDriveFolderId();
       const res = await this.drive.files.create({
         fields: 'id, webViewLink',
         requestBody: {
           name: fileName,
-          parents: [driveRootFolder],
+          parents: [driveFolderId],
           properties: {
             assetId: asset.id,
             contributor: asset.contributor,
@@ -234,10 +281,6 @@ class GDriveSync {
       });
 
       throw ex;
-    } finally {
-      if (conn) {
-        conn.release();
-      }
     }
   }
 
