@@ -28,7 +28,6 @@ const SYNC_INTERVAL = 60 * 1000;
 
 class GDriveSync {
   constructor(params) {
-    this.settings = params.settings;
     this.databasePool = params.databasePool;
     this.uploadsDir = params.uploadsDir;
   }
@@ -40,7 +39,7 @@ class GDriveSync {
 
   async start() {
     try {
-      this.initOAuthClient();
+      await this.initOAuthClient();
       this.initDrive();
       this.syncLoop();
     } catch (ex) {
@@ -50,20 +49,29 @@ class GDriveSync {
     }
   }
 
-  initOAuthClient() {
-    const {
-      driveClientId, driveClientSecret, driveRedirectURI, driveRefreshToken,
-    } = this.settings;
-    this.oAuth2Client = new google.auth.OAuth2(driveClientId, driveClientSecret, driveRedirectURI);
-    this.oAuth2Client.setCredentials({ refresh_token: driveRefreshToken });
+  async initOAuthClient() {
+    let conn;
 
-    // Add a listener for refresh tokens
-    this.oAuth2Client.on('tokens', async (tokens) => {
-      if (tokens.refresh_token) {
-        console.info('Received new refresh token');
-        this.saveRefreshToken(tokens.refresh_token);
+    try {
+      conn = await this.databasePool.getConnection();
+      const {
+        driveClientId, driveClientSecret, driveRedirectURI, driveRefreshToken,
+      } = await Utils.getSettings(conn);
+      this.oAuth2Client = new google.auth.OAuth2(driveClientId, driveClientSecret, driveRedirectURI);
+      this.oAuth2Client.setCredentials({ refresh_token: driveRefreshToken });
+
+      // Add a listener for refresh tokens
+      this.oAuth2Client.on('tokens', async (tokens) => {
+        if (tokens.refresh_token) {
+          console.info('Received new refresh token.');
+          this.saveRefreshToken(tokens.refresh_token);
+        }
+      });
+    } finally {
+      if (conn) {
+        conn.release();
       }
-    });
+    }
   }
 
   async saveRefreshToken(refreshToken) {
@@ -170,16 +178,20 @@ class GDriveSync {
   }
 
   async uploadAsset(asset) {
+    let conn;
+
     try {
       console.log(`Uploading asset #${asset.id}: ${asset.filename}`);
 
+      conn = await this.databasePool.getConnection();
       const fileName = `${asset.title} - ${asset.contributor}${path.extname(asset.filename)}`;
 
+      const { driveRootFolder } = await Utils.getSettings(conn);
       const res = await this.drive.files.create({
         fields: 'id, webViewLink',
         requestBody: {
           name: fileName,
-          parents: [this.settings.driveFolderId],
+          parents: [driveRootFolder],
           properties: {
             assetId: asset.id,
             contributor: asset.contributor,
@@ -222,6 +234,10 @@ class GDriveSync {
       });
 
       throw ex;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
     }
   }
 
@@ -275,7 +291,8 @@ class GDriveSync {
 
     try {
       conn = await this.databasePool.getConnection();
-      await Notifications.addErrorNotification(conn, this.settings.adminRecipient, data);
+      const { adminRecipient } = await Utils.getSettings(conn);
+      await Notifications.addErrorNotification(conn, adminRecipient, data);
     } catch (ex) {
       console.trace(ex);
     } finally {
@@ -294,7 +311,8 @@ class GDriveSync {
 
       if (rows.length === 1) {
         const [asset] = rows;
-        await Notifications.addContributionNotification(conn, this.settings.assetRecipient, asset);
+        const { assetRecipient } = await Utils.getSettings(conn);
+        await Notifications.addContributionNotification(conn, assetRecipient, asset);
         console.log('Notification is queued.');
       }
     } catch (error) {
