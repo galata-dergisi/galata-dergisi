@@ -43,49 +43,26 @@ const pool = mariadb.createPool({
   ...config.db,
 });
 
-async function getSettings() {
-  let conn;
-
-  try {
-    conn = await pool.getConnection();
-    const rows = await conn.query('SELECT * FROM settings LIMIT 1');
-
-    if (rows.length !== 1) {
-      throw new Error('Settings table is misconfigured!');
-    }
-
-    return rows[0];
-  } finally {
-    if (conn) {
-      conn.release();
-    }
-  }
-}
-
-function initServices(settings) {
+function initServices() {
   GDriveSync.init({
-    settings,
     databasePool: pool,
     uploadsDir: UPLOADS_DIR,
   });
 
   Notifications.init({
-    settings,
     databasePool: pool,
   });
 }
 
-function initWebServer(settings) {
+function initWebServer() {
   // Initialize magazines controller
   const magazinesController = new MagazinesController({
-    settings,
     databasePool: pool,
     staticPath: STATIC_PATH,
   });
 
   // Initialize contributions controller
   const contributionsController = new ContributionsController({
-    settings,
     databasePool: pool,
     staticPath: STATIC_PATH,
     uploadsDir: UPLOADS_DIR,
@@ -141,13 +118,11 @@ function areServicesDisabled() {
 // Immediately invoked function: main()
 (async function main() {
   try {
-    const settings = await getSettings();
-
     if (!areServicesDisabled()) {
-      await initServices(settings);
+      await initServices();
     }
 
-    await initWebServer(settings);
+    await initWebServer();
   } catch (ex) {
     console.trace(ex);
     cleanup();
