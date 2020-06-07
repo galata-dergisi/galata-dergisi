@@ -166,9 +166,9 @@ class Notifications {
 
     messageBody += `
       <tr>
-        <td>Mesaj</td>
-        <td>:</td>
-        <td>${data.message}</td>
+        <td style="vertical-align: top;">Mesaj</td>
+        <td style="vertical-align: top;">:</td>
+        <td>${data.message.replace(/\r?\n/g, '<br />')}</td>
       </tr>
       </table>
       <br /><br />
