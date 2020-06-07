@@ -23,7 +23,6 @@ const INTERVAL = 60 * 1000;
 
 class Notifications {
   constructor(params) {
-    this.settings = params.settings;
     this.databasePool = params.databasePool;
   }
 
@@ -167,9 +166,9 @@ class Notifications {
 
     messageBody += `
       <tr>
-        <td>Mesaj</td>
-        <td>:</td>
-        <td>${data.message}</td>
+        <td style="vertical-align: top;">Mesaj</td>
+        <td style="vertical-align: top;">:</td>
+        <td>${data.message.replace(/\r?\n/g, '<br />')}</td>
       </tr>
       </table>
       <br /><br />
@@ -296,28 +295,28 @@ class Notifications {
     }
   }
 
-  getSmtpTransporter() {
+  static getSmtpTransporter(settings) {
     return nodemailer.createTransport({
-      host: this.settings.smtpHost,
-      port: this.settings.smtpPort,
-      secure: this.settings.smtpSecure,
+      host: settings.smtpHost,
+      port: settings.smtpPort,
+      secure: settings.smtpSecure,
       auth: {
-        user: this.settings.smtpUsername,
-        pass: this.settings.smtpPassword,
+        user: settings.smtpUsername,
+        pass: settings.smtpPassword,
       },
     });
   }
 
-  getSmtpMessage(queueItem) {
+  static getSmtpMessage(queueItem, settings) {
     return {
-      from: this.settings.assetSender,
-      to: this.settings.assetRecipient,
+      from: settings.assetSender,
+      to: settings.assetRecipient,
       subject: queueItem.subject,
       html: queueItem.message,
       dsn: {
         id: queueItem.id,
         notify: ['failure', 'delay'],
-        recipient: this.settings.adminRecipient,
+        recipient: settings.adminRecipient,
         return: 'headers',
       },
     };
@@ -346,9 +345,14 @@ class Notifications {
   }
 
   async sendEmail(queueItem) {
+    let conn;
+
     try {
-      const transporter = this.getSmtpTransporter();
-      const message = this.getSmtpMessage(queueItem);
+      conn = await this.databasePool.getConnection();
+      const settings = await Utils.getSettings(conn);
+
+      const transporter = Notifications.getSmtpTransporter(settings);
+      const message = Notifications.getSmtpMessage(queueItem, settings);
 
       console.log(`Queue Item #${queueItem.id}: Sending email "${queueItem.subject}" to <${queueItem.recipient}>...`);
       await transporter.sendMail(message);
@@ -358,6 +362,10 @@ class Notifications {
     } catch (ex) {
       console.warn(`Failed to send email. Queue Item Id: ${queueItem.id}. Will retry in the next loop.`);
       console.trace(ex);
+    } finally {
+      if (conn) {
+        conn.release();
+      }
     }
   }
 

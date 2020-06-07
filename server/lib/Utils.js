@@ -16,8 +16,43 @@
 // along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 
 class Utils {
+  /**
+   * Constructs this sentence: There is/are ${count} ${itemName}(s).
+   * @param {number} count Number of items
+   * @param {string} itemName Name of items
+   * @returns {string}
+   */
   static constructEnglishCountingSentence(count, itemName) {
     return `There ${count === 1 ? 'is' : 'are'} ${count === 0 ? 'no' : count} ${itemName}${count === 1 ? '' : 's'}.`;
+  }
+
+  /**
+   * Retrieves settings from database.
+   * @param {object} conn MariaDB connection instance
+   * @returns {object} First row of the settings table
+   */
+  static async getSettings(conn) {
+    const rows = await conn.query('SELECT * FROM settings');
+
+    if (rows.length !== 1) {
+      throw new Error('Settings table is in invalid state!');
+    }
+
+    const [settings] = rows;
+    settings.smtpSecure = Buffer.from(settings.smtpSecure)[0] === 1;
+
+    return settings;
+  }
+
+  /**
+   * This method returns long month name.
+   * Unfortunately we can't use Intl.DateTimeFormat since node comes with en-US only.
+   * @param {Date} date
+   * @returns {string} Month name (long)
+   */
+  static getLocalMonth(date) {
+    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    return months[date.getMonth()];
   }
 }
 
