@@ -28,8 +28,26 @@
 
   // DOM Elements
   let form;
+  let fileInput;
+  let fileInputText;
   let submitButton;
   let assetTypeInput;
+
+  const MIME_TYPES = {
+    text: 'text/plain, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.oasis.opendocument.text, application/rtf, .txt, .pdf, .doc, .docx, .odt, .rtf',
+    image: 'image/*, .png, .jpg, .jpeg, .bmp, .tiff, .tif',
+    audio: 'audio/*, .mp3, .ogg',
+  };
+
+  const ASSET_MIMES = {
+    siir: 'text',
+    oyku: 'text',
+    deneme: 'text',
+    roportaj: 'text',
+    elestiri: 'text',
+    resim: 'image',
+    ses: 'audio',
+  };
 
   async function onButtonClick() {
     form.reportValidity();
@@ -85,11 +103,47 @@
     }
   }
 
+  function ensureFileMimeMatchesAssetType() {
+    const assetTypeEmpty = !assetType;
+    const videoAsset = assetType === 'video';
+    let fileMimeMatchesAssetMime = false;
+
+    if (!videoAsset && fileInput.files.length) {
+      const fileMime = fileInput.files[0].type;
+      const regexpString = MIME_TYPES[ASSET_MIMES[assetType]]
+        .replace(/\s/g, '')
+        .split(',')
+        .map((assetMime) => {
+          if (/^\./.test(assetMime)) {
+            assetMime += '$';
+          }
+
+          return assetMime
+            .replace('*', '.+')
+            .replace('.', '\\.')
+            .replace('/', '\\/');
+        })
+        .join('|');
+
+      const regexp = new RegExp(regexpString);
+      fileMimeMatchesAssetMime = regexp.test(fileMime);
+    }
+
+    if (assetTypeEmpty || videoAsset || !fileMimeMatchesAssetMime) {
+      fileInput.value = '';
+      fileInputText.value = ''; 
+      fileInputText.classList.remove('valid');
+      return;
+    }
+  }
+
   function onAssetTypeChange() {
     if (assetTypeInput.value) {
       const { input } = M.FormSelect.getInstance(assetTypeInput);
       input.setCustomValidity('');
     }
+
+    ensureFileMimeMatchesAssetType();
   }
 
   if (window.matchMedia) {
@@ -278,6 +332,7 @@
               <div class="btn">
                 <span>Dosya</span>
                 <input 
+                  bind:this={fileInput}
                   on:change={(e) => {
                     if (e.target.files.length && e.target.files[0].size >= MAX_FILE_SIZE) {
                       e.target.setCustomValidity("Lütfen 100 MB'den küçük bir dosya seçiniz.");
@@ -289,10 +344,10 @@
                   type="file" 
                   name="file" 
                   required="required"
-                  accept="image/*,audio/*,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/rtf,.txt,.pdf,.doc,.docx,.odt,.rtf,.mp3,.ogg,.jpg,.png,jpeg,.bmp,tiff" />
+                  accept={assetType === 'video' ? '' : MIME_TYPES[ASSET_MIMES[assetType]]} />
               </div>
               <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Dosya seçiniz." />
+                <input bind:this={fileInputText} class="file-path validate" type="text" placeholder="Dosya seçiniz." />
               </div>
             </div>
           </div>
