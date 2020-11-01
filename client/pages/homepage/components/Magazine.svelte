@@ -467,9 +467,6 @@
       class:move-left={moveLeft} 
       class:last-page={currentPage === numberOfPages} 
       class="magazine">
-      <img
-        src={thumbnailURL.replace('thumbnail', 'front')}
-        alt="{publishDateText} Ön Kapak" />
     </div>
   </div>
 </div>

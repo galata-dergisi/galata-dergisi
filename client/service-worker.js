@@ -17,7 +17,7 @@
 
 /* eslint no-restricted-globals: 1 */
 
-const CACHE_NAME = 'galatadergisi-cache-v14';
+const CACHE_NAME = 'galatadergisi-cache-v16';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];
@@ -28,7 +28,6 @@ const networkFirstList = [
 const cacheFirstList = [
   /^https:\/\/cdnjs\.cloudflare\.com\//,
   /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
-  /^https:\/\/kit(?:-free)\.fontawesome\.com\//,
 ];
 
 async function cleanUpObseleteCaches() {
