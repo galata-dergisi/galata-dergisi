@@ -120,9 +120,6 @@ class GDriveSync {
 
           Logger.log('Qeueing a notification for the new asset...');
           await this.sendContributionNotification(asset.id);
-
-          Logger.log('Deleting the uploaded file from server...');
-          await this.deleteAssetFile(asset);
         }
       }
     } catch (ex) {
@@ -313,20 +310,6 @@ class GDriveSync {
       if (conn) {
         conn.release();
       }
-    }
-  }
-
-  async deleteAssetFile(asset) {
-    try {
-      await fsPromises.unlink(asset.filepath);
-      Logger.log(`Asset #${asset.id}'s file is deleted from server.`);
-    } catch (error) {
-      this.sendErrorNotification({
-        title: 'Failed to Delete Asset File!',
-        error,
-      });
-
-      throw error;
     }
   }
 
