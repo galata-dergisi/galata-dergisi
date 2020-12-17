@@ -103,7 +103,12 @@ function cleanup(signal = 'SIGTERM') {
       terminateServer(),
     ])
     .then(() => console.log('Cleanup completed.'))
-    .catch((err) => console.trace(err))
+    .catch((err) => {
+      const isPoolClosedError = err && err.code === 'ER_POOL_ALREADY_CLOSED';
+      if (!isPoolClosedError) {
+        console.trace(err)
+      }
+    })
     .finally(() => process.kill(process.pid, signal));
 }
 
