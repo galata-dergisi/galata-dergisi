@@ -19,6 +19,7 @@ const fs = require('fs');
 const path = require('path');
 const { google } = require('googleapis');
 const Utils = require('../lib/Utils.js');
+const Logger = require('../lib/Logger.js');
 const Notifications = require('./Notifications.js');
 
 const fsPromises = fs.promises;
@@ -44,8 +45,8 @@ class GDriveSync {
       this.initDrive();
       this.syncLoop();
     } catch (ex) {
-      console.trace(ex);
-      console.error('Failed to initialize Google Drive Sync.');
+      Logger.trace(ex);
+      Logger.error('Failed to initialize Google Drive Sync.');
       process.exit(13);
     }
   }
@@ -64,7 +65,7 @@ class GDriveSync {
       // Add a listener for refresh tokens
       this.oAuth2Client.on('tokens', async (tokens) => {
         if (tokens.refresh_token) {
-          console.info('Received new refresh token.');
+          Logger.info('Received new refresh token.');
           this.saveRefreshToken(tokens.refresh_token);
         }
       });
@@ -83,13 +84,13 @@ class GDriveSync {
       const result = await conn.query('UPDATE settings SET driveRefreshToken = ?', [refreshToken]);
 
       if (result.affectedRows !== 1) {
-        console.warn('Falied to save refresh token in the database!');
+        Logger.warn('Falied to save refresh token in the database!');
         return;
       }
 
-      console.info('Refresh token has been saved.');
+      Logger.info('Refresh token has been saved.');
     } catch (ex) {
-      console.trace(ex);
+      Logger.trace(ex);
     } finally {
       if (conn) {
         conn.release();
@@ -114,18 +115,18 @@ class GDriveSync {
         if (await this.fileExists(asset)) {
           await this.uploadAsset(asset);
 
-          console.log('Saving Google Drive information to database...');
+          Logger.log('Saving Google Drive information to database...');
           await this.saveDriveDataToDatabase(asset);
 
-          console.log('Qeueing a notification for the new asset...');
+          Logger.log('Qeueing a notification for the new asset...');
           await this.sendContributionNotification(asset.id);
 
-          console.log('Deleting the uploaded file from server...');
+          Logger.log('Deleting the uploaded file from server...');
           await this.deleteAssetFile(asset);
         }
       }
     } catch (ex) {
-      console.trace(ex);
+      Logger.trace(ex);
     } finally {
       setTimeout(() => this.syncLoop(), SYNC_INTERVAL);
     }
@@ -137,9 +138,9 @@ class GDriveSync {
     try {
       conn = await this.databasePool.getConnection();
 
-      console.log('Querying database for new assets...');
+      Logger.log('Querying database for new assets...');
       const rows = await conn.query('SELECT * FROM assets WHERE isUploaded = 0 AND fileName IS NOT NULL');
-      console.log(Utils.constructEnglishCountingSentence(rows.length, 'asset'));
+      Logger.log(Utils.constructEnglishCountingSentence(rows.length, 'asset'));
 
       return rows;
     } finally {
@@ -157,7 +158,7 @@ class GDriveSync {
         return true;
       }
 
-      console.warn(`${asset.filename} is not a file!`);
+      Logger.warn(`${asset.filename} is not a file!`);
     } catch (ex) {
       if (ex.code === 'ENOENT') {
         this.sendErrorNotification({
@@ -179,7 +180,7 @@ class GDriveSync {
   }
 
   async ensureFolderInDrive(rootFolderId, folderName) {
-    console.log(`Querying Google Drive to check if "${folderName}" exists...`);
+    Logger.log(`Querying Google Drive to check if "${folderName}" exists...`);
 
     const { data: { files }} = await this.drive.files.list({
       q: `mimeType = '${FOLDER_MIME_TYPE}' and '${rootFolderId}' in parents and name = '${folderName}'`,
@@ -189,11 +190,11 @@ class GDriveSync {
 
     if (files.length === 1) {
       const [{ id }] = files;
-      console.log(`Found "${folderName}" in Google Drive. Returning its ID: ${id}`);
+      Logger.log(`Found "${folderName}" in Google Drive. Returning its ID: ${id}`);
       return id;
     }
 
-    console.log(`"${folderName}" doesn't exist. Creating it...`);
+    Logger.log(`"${folderName}" doesn't exist. Creating it...`);
 
     const { data: file } = await this.drive.files.create({
       resource: {
@@ -204,7 +205,7 @@ class GDriveSync {
       fields: 'id',
     });
 
-    console.log(`"${folderName}" has been created. Returning its ID: ${file.id}`);
+    Logger.log(`"${folderName}" has been created. Returning its ID: ${file.id}`);
 
     return file.id;
   }
@@ -229,7 +230,7 @@ class GDriveSync {
 
   async uploadAsset(asset) {
     try {
-      console.log(`Uploading asset #${asset.id}: ${asset.filename}`);
+      Logger.log(`Uploading asset #${asset.id}: ${asset.filename}`);
 
       const fileName = `${asset.title} - ${asset.contributor}${path.extname(asset.filename)}`;
 
@@ -254,13 +255,13 @@ class GDriveSync {
         },
       });
 
-      console.log(`Asset #${asset.id} is uploaded.`);
-      console.log('--------------------------------------------');
-      console.log('File ID  : ', res.data.id);
-      console.log('Asset ID : ', asset.id);
-      console.log('File Name: ', fileName);
-      console.log('Web Link : ', res.data.webViewLink);
-      console.log('--------------------------------------------');
+      Logger.log(`Asset #${asset.id} is uploaded.`);
+      Logger.log('--------------------------------------------');
+      Logger.log('File ID  : ', res.data.id);
+      Logger.log('Asset ID : ', asset.id);
+      Logger.log('File Name: ', fileName);
+      Logger.log('Web Link : ', res.data.webViewLink);
+      Logger.log('--------------------------------------------');
 
       asset.googleDriveData = res.data;
     } catch (ex) {
@@ -300,7 +301,7 @@ class GDriveSync {
         throw new Error(`Failed to update asset #${asset.id}'s entry in database.`);
       }
 
-      console.log(`Asset #${asset.id}'s file id is saved to database.`);
+      Logger.log(`Asset #${asset.id}'s file id is saved to database.`);
     } catch (error) {
       this.sendErrorNotification({
         title: 'Failed to Save Google Drive Data to Database!',
@@ -318,7 +319,7 @@ class GDriveSync {
   async deleteAssetFile(asset) {
     try {
       await fsPromises.unlink(asset.filepath);
-      console.log(`Asset #${asset.id}'s file is deleted from server.`);
+      Logger.log(`Asset #${asset.id}'s file is deleted from server.`);
     } catch (error) {
       this.sendErrorNotification({
         title: 'Failed to Delete Asset File!',
@@ -337,7 +338,7 @@ class GDriveSync {
       const { adminRecipient } = await Utils.getSettings(conn);
       await Notifications.addErrorNotification(conn, adminRecipient, data);
     } catch (ex) {
-      console.trace(ex);
+      Logger.trace(ex);
     } finally {
       if (conn) {
         conn.release();
@@ -356,7 +357,7 @@ class GDriveSync {
         const [asset] = rows;
         const { assetRecipient } = await Utils.getSettings(conn);
         await Notifications.addContributionNotification(conn, assetRecipient, asset);
-        console.log('Notification is queued.');
+        Logger.log('Notification is queued.');
       }
     } catch (error) {
       this.sendErrorNotification({

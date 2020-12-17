@@ -22,6 +22,7 @@ const fsPromises = require('fs').promises;
 const querystring = require('querystring');
 const { Router } = require('express');
 const { v4: uuidv4 } = require('uuid');
+const Logger = require('../lib/Logger.js');
 const CustomError = require('../lib/CustomError.js');
 const Notifications = require('../services/Notifications.js');
 
@@ -283,7 +284,7 @@ class ContributionsController {
         return;
       }
 
-      console.trace(ex);
+      Logger.trace(ex);
 
       res.json({
         success: false,

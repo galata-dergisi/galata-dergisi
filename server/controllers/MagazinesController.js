@@ -18,6 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 const { Router } = require('express');
+const Logger = require('../lib/Logger.js');
 
 class MagazinesController {
   constructor(params) {
@@ -65,14 +66,14 @@ class MagazinesController {
       res.set('content-type', 'text/html; charset=UTF-8');
       res.end(this.cache.fileContent);
     } catch (ex) {
-      console.trace(ex);
+      Logger.trace(ex);
       res.status(500).end('<h1>Internal Server Error</h1>');
     }
   }
 
   serveAudioFiles(req, res) {
     const { magazineIndex, audioFile } = req.params;
-    console.log('Serving audio file', path.join(this.staticPath, 'audio', magazineIndex, audioFile));
+    Logger.log('Serving audio file', path.join(this.staticPath, 'audio', magazineIndex, audioFile));
     res.sendFile(path.join(this.staticPath, 'audio', magazineIndex, audioFile));
   }
 
@@ -102,7 +103,7 @@ class MagazinesController {
 
       res.status(200).json(result);
     } catch (ex) {
-      console.trace(ex);
+      Logger.trace(ex);
       res.status(200).json({
         success: false,
         error: 'Someting went wrong.',
@@ -135,7 +136,7 @@ class MagazinesController {
 
       res.status(200).json(result);
     } catch (ex) {
-      console.trace(ex);
+      Logger.trace(ex);
       res.status(200).json({
         success: false,
         error: 'Someting went wrong.',

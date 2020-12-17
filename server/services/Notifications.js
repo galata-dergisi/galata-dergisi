@@ -17,6 +17,7 @@
 
 const nodemailer = require('nodemailer');
 const Utils = require('../lib/Utils.js');
+const Logger = require('../lib/Logger.js');
 
 // 1 minute
 const INTERVAL = 60 * 1000;
@@ -283,9 +284,9 @@ class Notifications {
     try {
       conn = await this.databasePool.getConnection();
 
-      console.log('Checking notification queue...');
+      Logger.log('Checking notification queue...');
       const rows = await conn.query('SELECT * FROM notification_queue');
-      console.log(Utils.constructEnglishCountingSentence(rows.length, 'notification'));
+      Logger.log(Utils.constructEnglishCountingSentence(rows.length, 'notification'));
 
       return rows;
     } finally {
@@ -330,13 +331,13 @@ class Notifications {
       const result = await conn.query('DELETE FROM notification_queue WHERE id = ?', [id]);
 
       if (result.affectedRows !== 1) {
-        console.warn(`Failed to remove queue item #${id}: Item doesn't exist.`);
+        Logger.warn(`Failed to remove queue item #${id}: Item doesn't exist.`);
       }
 
-      console.log(`Queue Item #${id} is removed.`);
+      Logger.log(`Queue Item #${id} is removed.`);
     } catch (ex) {
-      console.error('Failed to remove entry from database.');
-      console.trace(ex);
+      Logger.error('Failed to remove entry from database.');
+      Logger.trace(ex);
     } finally {
       if (conn) {
         conn.release();
@@ -354,14 +355,14 @@ class Notifications {
       const transporter = Notifications.getSmtpTransporter(settings);
       const message = Notifications.getSmtpMessage(queueItem, settings);
 
-      console.log(`Queue Item #${queueItem.id}: Sending email "${queueItem.subject}" to <${queueItem.recipient}>...`);
+      Logger.log(`Queue Item #${queueItem.id}: Sending email "${queueItem.subject}" to <${queueItem.recipient}>...`);
       await transporter.sendMail(message);
 
-      console.log(`Email is sent. Removing queue item #${queueItem.id}...`);
+      Logger.log(`Email is sent. Removing queue item #${queueItem.id}...`);
       await this.removeQueueItemFromDatabase(queueItem.id);
     } catch (ex) {
-      console.warn(`Failed to send email. Queue Item Id: ${queueItem.id}. Will retry in the next loop.`);
-      console.trace(ex);
+      Logger.warn(`Failed to send email. Queue Item Id: ${queueItem.id}. Will retry in the next loop.`);
+      Logger.trace(ex);
     } finally {
       if (conn) {
         conn.release();
@@ -377,7 +378,7 @@ class Notifications {
         await this.sendEmail(queueItem);
       }
     } catch (ex) {
-      console.trace(ex);
+      Logger.trace(ex);
     } finally {
       setTimeout(() => this.loop(), INTERVAL);
     }
