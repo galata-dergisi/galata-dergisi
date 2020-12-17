@@ -25,6 +25,7 @@ const MagazinesController = require('./controllers/MagazinesController.js');
 const ContributionsController = require('./controllers/ContributionsController.js');
 const GDriveSync = require('./services/GDriveSync.js');
 const Notifications = require('./services/Notifications.js');
+const Logger = require('./lib/Logger.js');
 
 const PORT = process.env.PORT || 3000;
 const STATIC_PATH = path.join(__dirname, '../public');
@@ -77,11 +78,11 @@ function initWebServer() {
 
   server = app.listen(PORT, '0.0.0.0', (err) => {
     if (err) {
-      console.trace(err);
+      Logger.trace(err);
       return;
     }
 
-    console.log(`Server started listening from ${PORT}`);
+    Logger.log(`Server started listening from ${PORT}`);
   });
 }
 
@@ -102,8 +103,13 @@ function cleanup(signal = 'SIGTERM') {
       pool.end(),
       terminateServer(),
     ])
-    .then(() => console.log('Cleanup completed.'))
-    .catch((err) => console.trace(err))
+    .then(() => Logger.log('Cleanup completed.'))
+    .catch((err) => {
+      const isPoolClosedError = err && err.code === 'ER_POOL_ALREADY_CLOSED';
+      if (!isPoolClosedError) {
+        Logger.trace(err)
+      }
+    })
     .finally(() => process.kill(process.pid, signal));
 }
 
@@ -126,7 +132,7 @@ function areServicesDisabled() {
 
     await initWebServer();
   } catch (ex) {
-    console.trace(ex);
+    Logger.trace(ex);
     cleanup();
   }
 }());
