@@ -69,3 +69,9 @@ sql-backups/
 uploads/
 credentials.json
 token.json
+
+*.mp3
+*.ogg
+public*/
+google-test/
+vim.html
