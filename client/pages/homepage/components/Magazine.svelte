@@ -1,18 +1,18 @@
-<!-- 
+<!--
   Copyright 2020 Mehmet Baker
- 
+
   This file is part of galata-dergisi.
- 
+
   galata-dergisi is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   galata-dergisi is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 -->
@@ -103,14 +103,14 @@
   }
 
   async function getMagazinePages() {
-    const response = await fetch(`/magazines/${index}/pages`);      
+    const response = await fetch(`/magazines/${index}/pages`);
     const result = await response.json();
 
     if (result.success === true) {
       return result.pages;
     }
 
-    throw new Error(result.message);      
+    throw new Error(result.message);
   }
 
   function onAnchorClick(e) {
@@ -288,7 +288,7 @@
       a.next-button.move {
         transform: translateX(250px);
       }
-      
+
       a.prev-button.move {
         transform: translateX(-250px);
       }
@@ -337,7 +337,7 @@
       background:white;
       box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
-    
+
     :global(.odd .gradient) {
       position:absolute;
       top:0;
@@ -391,19 +391,19 @@
   }
 </style>
 
-<div 
+<div
   in:fly={{ duration: 300, y: -90, delay: 550 }}
   out:fly={{ duration: 300, y: -90 }}
   class="toolbar">
   <div class="top">
-    <a 
+    <a
       class="prev-button"
       class:disabled={currentPage === 1}
       class:move={!moveLeft}
       on:click|preventDefault={() => {
         goToPage(prevPage);
       }}
-      href="/dergiler/sayi{index}/{prevPage}" 
+      href="/dergiler/sayi{index}/{prevPage}"
       title="Önceki Sayfa">
       <i class="fas fa-arrow-alt-circle-left" />
     </a>
@@ -433,22 +433,22 @@
       <i class="fab fa-twitter"></i>
     </span>
 
-    <span 
+    <span
       role="button"
       on:click={close}
-      title="Kapat" 
+      title="Kapat"
     >
       <i class="fas fa-times-circle fa-2x"></i>
     </span>
 
-    <a 
+    <a
       class="next-button"
       class:disabled={nextPage === currentPage}
       class:move={!moveLeft}
       on:click|preventDefault={() => {
         goToPage(nextPage);
       }}
-      href="/dergiler/sayi{index}/{nextPage}" 
+      href="/dergiler/sayi{index}/{nextPage}"
       title="Sonraki Sayfa">
       <i class="fas fa-arrow-alt-circle-right" />
     </a>
@@ -462,10 +462,10 @@
   on:outroend
   bind:this={containerElement}>
   <div class="center">
-    <div 
-      bind:this={magazine} 
-      class:move-left={moveLeft} 
-      class:last-page={currentPage === numberOfPages} 
+    <div
+      bind:this={magazine}
+      class:move-left={moveLeft}
+      class:last-page={currentPage === numberOfPages}
       class="magazine">
     </div>
   </div>

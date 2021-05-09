@@ -1,18 +1,18 @@
- <!-- 
+ <!--
    Copyright 2020 Mehmet Baker
- 
+
    This file is part of galata-dergisi.
- 
+
    galata-dergisi is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    galata-dergisi is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
   -->
@@ -103,7 +103,7 @@
       case 'ArrowLeft': {
         if (loadedMagazine) {
           loadedMagazineSvelteInstance.goToPreviousPage();
-        } 
+        }
 
         break;
       }
@@ -241,7 +241,7 @@
 
 <main>
   {#if !loadedMagazine}
-    <div 
+    <div
       class="logo"
       out:fly="{{ duration: 1000, y: -220 }}"
       in:fly="{{ duration: 1000, y: -220, delay: 200 }}"></div>
@@ -250,13 +250,13 @@
   <div class="container" class:hidden={loadedMagazine}>
     <div class="row row-1">
       {#if latestMagazine}
-        <MagazineThumbnail 
+        <MagazineThumbnail
           on:loadmagazine={onLoadMagazine}
           {...latestMagazine} />
       {/if}
     </div>
     <div class="row row-2">
-      <Carousel 
+      <Carousel
         on:loadmagazine={onLoadMagazine}
         bind:this={carouselInstance} />
     </div>
@@ -266,8 +266,8 @@
 <Footer />
 
 {#if loadedMagazine}
-  <Magazine 
-    {...loadedMagazine} 
+  <Magazine
+    {...loadedMagazine}
     {landingPage}
     on:loadmagazine={onLoadMagazine}
     on:unloadmagazine={unloadMagazine}

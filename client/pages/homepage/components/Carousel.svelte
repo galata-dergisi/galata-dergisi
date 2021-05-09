@@ -1,18 +1,18 @@
- <!-- 
+ <!--
    Copyright 2020 Mehmet Baker
- 
+
    This file is part of galata-dergisi.
- 
+
    galata-dergisi is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    galata-dergisi is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
   -->
@@ -34,7 +34,7 @@
    * @property {string} publishDateText Date text (e.g. Mart 2018)
    * @property {string} thumbnailURL Thumbnail URL
    * @property {boolean} visible Visibility flag.
-   */ 
+   */
 
   /**
    * @type {CarouselMagazine[]}
@@ -80,7 +80,7 @@
     blockEvents = true;
     //Fade out the left-most visible magazine thumbnail.
     magazineThumbnailInstances[firstItemIndex].fadeOut();
-    
+
     //If there is an invisible mag on the right of right-most visible mag, fade it in
     if (firstItemIndex + 3 < carouselMagazines.length) {
       magazineThumbnailInstances[firstItemIndex + 3].fadeIn();
@@ -116,13 +116,13 @@
     <Arrow
       disabled={leftArrowDisabled}
       on:click={handleLeftArrowClick}
-     /> 
+     />
    </div>
 
   <div class="items" style="transform: translateX(-{firstItemIndex * 150}px" bind:this={itemsElement}>
     {#each carouselMagazines as magazine, i}
       <MagazineThumbnail {...magazine}
-        carouselItem={true} 
+        carouselItem={true}
         on:loadmagazine
         bind:this={magazineThumbnailInstances[i]} />
     {/each}
