@@ -1,6 +1,6 @@
 # galata-dergisi
 
-[Click here for English.](README-EN.md)
+[Click here for English.](README.md)
 
 [Galata Dergisi](https://galatadergisi.org)'nin kaynak kodu.
 
