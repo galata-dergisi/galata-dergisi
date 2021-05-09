@@ -221,7 +221,6 @@
       rgba(242, 242, 242, 1) 71%,
       rgba(217, 217, 217, 1) 100%
     );
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d9d9d9', GradientType=0 );
   }
 
   .logo {

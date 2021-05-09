@@ -71,7 +71,7 @@ export default [
 			file: 'public/bundle.js',
 		},
 		plugins: [
-			...getCommonPlugins({ cssPath: 'public/bundle.css' }),
+			...getCommonPlugins({ cssPath: 'bundle.css' }),
 
 			// Watch the `public` directory and refresh the
 			// browser on changes when not in production
@@ -102,7 +102,7 @@ export default [
 			file: 'public/katkida-bulunun/bundle.js',
 		},
 		plugins: [
-			...getCommonPlugins({ cssPath: 'public/katkida-bulunun/bundle.css' }),
+			...getCommonPlugins({ cssPath: 'katkida-bulunun/bundle.css' }),
 			copy({
 				targets: [
 					{ src: 'client/pages/contribute/katkida-bulunun.html', dest: 'public/katkida-bulunun', rename: 'index.html' },
