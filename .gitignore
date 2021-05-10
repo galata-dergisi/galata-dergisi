@@ -75,3 +75,5 @@ token.json
 public*/
 google-test/
 vim.html
+
+.DS_Store
