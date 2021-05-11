@@ -13,6 +13,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+
+    - run: npm install
+      name: Install dependencies
+
+    - run: npm run build
+      name: Generate client bundles
+
     - name: Compare service worker cache name
       uses: galata-dergisi/service-worker-checker@v1.0.1
       with:
