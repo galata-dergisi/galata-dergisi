@@ -306,21 +306,21 @@
         text-align: center;
         
         &:hover {
-        color: #4267B2;
+          color: #4267B2;
         }
       }  
 
       &.fa-twitter {
 
         &:hover {
-        color: #1DA1F2;
+          color: #1DA1F2;
         }
       }  
 
       &.fa-times-circle {
 
         &:hover {
-        color: #fd5c63;
+          color: #fd5c63;
         }
       }
     }
