@@ -298,7 +298,7 @@
       font-size: 32px;
 
       &:hover {
-        color:#4d4f53;
+        color: #4d4f53;
       }
 
       &.fa-facebook-f {
