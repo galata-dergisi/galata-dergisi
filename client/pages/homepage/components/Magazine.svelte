@@ -297,14 +297,50 @@
     i {
       font-size: 32px;
 
-      &:hover {
-        color: #525252;
+      &.fa-list-alt {
+
+        &:hover {
+        color:#4d4f53;
+        }
       }
 
       &.fa-facebook-f {
         width: 32px;
         text-align: center;
+        
+        &:hover {
+        color: #4267B2;
+        }
+      }  
+
+      &.fa-twitter {
+
+        &:hover {
+        color: #1DA1F2;
+        }
+      }  
+
+      &.fa-times-circle {
+
+        &:hover {
+        color: #fd5c63;
+        }
       }
+
+      &.fa-arrow-alt-circle-right {
+
+        &:hover {
+        color: #006837;
+        }
+      }
+
+      &.fa-arrow-alt-circle-left {
+
+        &:hover {
+        color: #6b0f24;
+        }
+      }
+
     }
 
     span {
@@ -414,6 +450,7 @@
       role="button"
       on:click={shareOnFacebook}
       title="Facebook'ta Paylaş"
+      class="fb-icon"
     >
       <i class="fab fa-facebook-f"></i>
     </span>
