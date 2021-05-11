@@ -1,5 +1,6 @@
 <!--
   Copyright 2020 Mehmet Baker
+  Copyright 2021 Zeynep Kazu
 
   This file is part of galata-dergisi.
 
