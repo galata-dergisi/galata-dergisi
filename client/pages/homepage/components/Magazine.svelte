@@ -297,11 +297,8 @@
     i {
       font-size: 32px;
 
-      &.fa-list-alt {
-
-        &:hover {
+      &:hover {
         color:#4d4f53;
-        }
       }
 
       &.fa-facebook-f {
@@ -326,21 +323,6 @@
         color: #fd5c63;
         }
       }
-
-      &.fa-arrow-alt-circle-right {
-
-        &:hover {
-        color: #006837;
-        }
-      }
-
-      &.fa-arrow-alt-circle-left {
-
-        &:hover {
-        color: #6b0f24;
-        }
-      }
-
     }
 
     span {
