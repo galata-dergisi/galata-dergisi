@@ -1,7 +1,8 @@
 - galata-dergisi is licensed as follows:
 
 """
-  Copyright 2020 Mehmet Baker
+  Copyright 2020-2021 Mehmet Baker
+  Copyright 2021 Zeynep Kazu
 
   galata-dergisi is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,7 +33,7 @@
   - Redistributions of source code must retain the above copyright notice,
     this list of conditions and the following disclaimer.
 
-  - Any redistribution, use, or modification is done solely for personal 
+  - Any redistribution, use, or modification is done solely for personal
     benefit and not for any commercial purpose or for monetary gain.
 
   THIS SOFTWARE IS PROVIDED BY THE PROJECT AND CONTRIBUTORS ''AS IS'' AND
@@ -48,27 +49,27 @@
   SUCH DAMAGE.
 """
 
-- jQuery, located at 
-  https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js, is 
+- jQuery, located at
+  https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js, is
   licensed as follows:
 """
   Copyright 2011, John Resig
   Dual licensed under the MIT or GPL Version 2 licenses.
   http://jquery.org/license
-  
+
   Includes Sizzle.js
   http://sizzlejs.com/
   Copyright 2011, The Dojo Foundation
   Released under the MIT, BSD, and GPL Licenses.
-  
+
   Date: Mon Nov 21 21:11:03 2011 -0500
 """
 
-- Playfair Display Font, located at 
-  https://fonts.googleapis.com/css?family=Playfair+Display:400&display=swap, is 
+- Playfair Display Font, located at
+  https://fonts.googleapis.com/css?family=Playfair+Display:400&display=swap, is
   licensed as follows:
 """
-  Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display), 
+  Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display),
   with Reserved Font Name "Playfair Display".
 
   This Font Software is licensed under the SIL Open Font License, Version 1.1.
