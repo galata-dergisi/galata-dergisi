@@ -1,5 +1,6 @@
 <!--
   Copyright 2020 Mehmet Baker
+  Copyright 2021 Zeynep Kazu
 
   This file is part of galata-dergisi.
 
@@ -298,12 +299,30 @@
       font-size: 32px;
 
       &:hover {
-        color: #525252;
+        color: #4d4f53;
       }
 
       &.fa-facebook-f {
         width: 32px;
         text-align: center;
+        
+        &:hover {
+          color: #4267B2;
+        }
+      }  
+
+      &.fa-twitter {
+
+        &:hover {
+          color: #1DA1F2;
+        }
+      }  
+
+      &.fa-times-circle {
+
+        &:hover {
+          color: #fd5c63;
+        }
       }
     }
 
@@ -414,6 +433,7 @@
       role="button"
       on:click={shareOnFacebook}
       title="Facebook'ta Paylaş"
+      class="fb-icon"
     >
       <i class="fab fa-facebook-f"></i>
     </span>
