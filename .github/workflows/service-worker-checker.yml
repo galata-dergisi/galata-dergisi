@@ -8,11 +8,12 @@ on:
 jobs:
   service_worker_checker:
     runs-on: ubuntu-latest
+    name: Service Worker Checker
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      
+
     - name: Compare service worker cache name
       uses: galata-dergisi/service-worker-checker@v1.0.1
       with:
-        REPO_PATH: ${{ env.GITHUB_WORKSPACE }}
+        REPO_PATH: ${{ github.workspace }}
