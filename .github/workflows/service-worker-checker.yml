@@ -25,6 +25,6 @@ jobs:
       name: Generate client bundles
 
     - name: Compare service worker cache name
-      uses: galata-dergisi/service-worker-checker@v1.0.1
+      uses: galata-dergisi/service-worker-checker@v1.0.2
       with:
         REPO_PATH: ${{ github.workspace }}
