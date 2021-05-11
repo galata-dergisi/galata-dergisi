@@ -1,5 +1,5 @@
  <!--
-   Copyright 2020 Mehmet Baker
+   Copyright 2020-2021 Mehmet Baker
 
    This file is part of galata-dergisi.
 
@@ -28,6 +28,14 @@
         navigator.serviceWorker.register('/service-worker.js');
       }
     </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-54346975-1"></script>
+    <script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'UA-54346975-1');
+		</script>
 
     <link rel="icon" type="image/png" href="/images/favicon.png" />
     <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css" />
