@@ -74,7 +74,19 @@ class MagazinesController {
   serveAudioFiles(req, res) {
     const { magazineIndex, audioFile } = req.params;
     Logger.log('Serving audio file', path.join(this.staticPath, 'audio', magazineIndex, audioFile));
-    res.sendFile(path.join(this.staticPath, 'audio', magazineIndex, audioFile));
+
+    if (/[\/\\]/.test(magazineIndex) || /[\/\\]/.test(audioFile)) {
+      res.status(403).end('<h1>Invalid request</h1>');
+      return;
+    }
+
+    const audioFilePath = path.join(magazineIndex, audioFile);
+    if (audioFilePath.indexOf('.') !== audioFilePath.lastIndexOf('.')) {
+      res.status(403).end('<h1>Invalid request</h1>');
+      return;
+    }
+
+    res.sendFile(path.join(this.staticPath, 'audio', audioFilePath));
   }
 
   async getMagazines(req, res) {
