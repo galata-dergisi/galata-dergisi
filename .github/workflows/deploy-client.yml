@@ -8,23 +8,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check_service_worker:
-    runs-on: ubuntu-latest
-    name: Check if service-worker is up to date
-    steps:
-      - name: Run service worker checker job
-        uses: ./service-worker-checker
-
   deploy:
     name: Deploy to production
     runs-on: ubuntu-latest
     environment: production
-    needs: check_service_worker
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate client bundles
+        run: npm run build
+
       - name: Deploy
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
-          scp -o StrictHostKeyChecking=no -v -P "${{ secrets.SSH_PORT }}" -r ${{ github.workspace }}/public "${{ secrets.SERVER_USERNAME }}"@"${{ SERVER_IP }}":/var/www/galata-test/
+          scp -o StrictHostKeyChecking=no -P "${{ secrets.SSH_PORT }}" -r ${{ github.workspace }}/public "${{ secrets.SERVER_USERNAME }}"@"${{ secrets.SERVER_IP }}":"${{ secrets.REMOTE_PATH }}"
