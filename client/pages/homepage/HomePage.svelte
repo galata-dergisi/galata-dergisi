@@ -129,8 +129,6 @@
     loadMagazineFromWindowLocation();
 
     document.addEventListener('keydown', onKeyDown);
-
-    setTimeout(() => console.info('Galata Dergisi'), 1000);
   });
 
   window.gotoMagazinePage = function (magazineIndex, page) {
