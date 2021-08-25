@@ -79,3 +79,7 @@ client/drive-download-20210509T210338Z-001/
 
 
 .DS_Store
+
+.yarn/*
+!.yarn/cache
+!.yarn/releases

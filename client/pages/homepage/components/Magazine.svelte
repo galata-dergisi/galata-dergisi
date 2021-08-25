@@ -397,7 +397,8 @@
       display: none;
     }
 
-    :global(.zoom-in .next-button, .zoom-in .previous-button) {
+    :global(.zoom-in .next-button),
+    :global(.zoom-in .previous-button) {
       display: none;
     }
   }

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import css from 'rollup-plugin-css-only';
 import copy from 'rollup-plugin-copy';
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
@@ -28,19 +29,14 @@ fs.mkdirSync('public/katkida-bulunun', { recursive: true });
 function getCommonPlugins({ cssPath }) {
 	return [
 		svelte({
-			// enable run-time checks when not in production
-			dev: !production,
-			// we'll extract any component CSS out into
-			// a separate file — better for performance
-			css: (css) => {
-				css.write(cssPath, !production);
-			},
 			preprocess: sveltePreprocess({
 				postcss: {
 					plugins: [autoprefixer],
 				},
 			}),
 		}),
+
+    css({ output: 'bundle.css' }),
 
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
