@@ -290,6 +290,7 @@
               bind:value={assetType} 
               bind:this={assetTypeInput} 
               name="assetType"
+              id="assetType"
               on:change={onAssetTypeChange}
               >
               <option value="" disabled="disabled" selected="selected">Seçiniz...</option>
@@ -302,7 +303,7 @@
               <option value="ses">Ses</option>
               <option value="video">Video</option>
             </select>
-            <label>Eser Türü</label>
+            <label for="assetType">Eser Türü</label>
           </div>
         </div>
 
