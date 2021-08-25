@@ -20,7 +20,6 @@
 
 <script>
   export let index;
-  export let thumbnailURL;
 
   export let publishDateText;
   export let tableOfContents;
@@ -36,7 +35,6 @@
   let containerElement;
 
   let magazinePageContents = null;
-  let magazinePageElements = null;
   let numberOfPages = null;
 
   let isLoaded = false;
@@ -305,18 +303,18 @@
       &.fa-facebook-f {
         width: 32px;
         text-align: center;
-        
+
         &:hover {
           color: #4267B2;
         }
-      }  
+      }
 
       &.fa-twitter {
 
         &:hover {
           color: #1DA1F2;
         }
-      }  
+      }
 
       &.fa-times-circle {
 
@@ -397,7 +395,8 @@
       display: none;
     }
 
-    :global(.zoom-in .next-button, .zoom-in .previous-button) {
+    :global(.zoom-in .next-button),
+    :global(.zoom-in .previous-button) {
       display: none;
     }
   }

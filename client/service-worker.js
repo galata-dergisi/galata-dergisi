@@ -17,7 +17,7 @@
 
 /* eslint no-restricted-globals: 1 */
 
-const CACHE_NAME = 'galatadergisi-cache-v20';
+const CACHE_NAME = 'galatadergisi-cache-v21';
 const networkOnlyList = [
   /\/magazines\/sayi\d+\/audio\//,
 ];

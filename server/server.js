@@ -30,7 +30,6 @@ const Logger = require('./lib/Logger.js');
 const PORT = process.env.PORT || 3000;
 const STATIC_PATH = path.join(__dirname, '../public');
 const UPLOADS_DIR = path.join(__dirname, '../uploads');
-const FONT_AWESOME_PATH = path.join(__dirname, '../node_modules/@fortawesome/fontawesome-free');
 
 // HTTP server
 let server;
@@ -73,7 +72,24 @@ function initWebServer() {
   app.use(compression({ threshold: 0 }));
   app.use(contributionsController.getRouter());
   app.use(magazinesController.getRouter());
-  app.use('/fontawesome', express.static(FONT_AWESOME_PATH));
+
+  app.use('/fontawesome', async (req, res, next) => {
+    try {
+      const urlPath = req.url.replace(/^\/fontawesome/, '');
+      const filePath = require.resolve(`@fortawesome/fontawesome-free${urlPath}`);
+
+      try {
+        await fs.promises.access(filePath);
+      } catch (ex) {
+        next(404);
+      }
+
+      res.sendFile(filePath);
+    } catch (ex) {
+      next(ex);
+    }
+  });
+
   app.use(express.static(STATIC_PATH));
 
   server = app.listen(PORT, '0.0.0.0', (err) => {

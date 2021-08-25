@@ -1,18 +1,18 @@
-<!-- 
+<!--
   Copyright 2020 Mehmet Baker
- 
+
   This file is part of galata-dergisi.
- 
+
   galata-dergisi is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   galata-dergisi is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with galata-dergisi. If not, see <https://www.gnu.org/licenses/>.
 -->
@@ -65,7 +65,7 @@
       }
 
       if (formData.get('g-recaptcha-response') === '') {
-        M.toast({ 
+        M.toast({
           html: 'Lütfen güvenlik doğrulamasını tamamlayınız.',
           classes: 'yellow darken-4',
         });
@@ -80,14 +80,14 @@
         const result = await response.json();
 
         if (!result.success) {
-          M.toast({ 
+          M.toast({
             html: result.error,
             classes: 'red darken-3',
           });
           return;
         }
 
-        M.toast({ 
+        M.toast({
           html: 'Gönderi tamamlandı, katkınız için teşekkür ederiz.',
           classes: 'teal darken-3',
         });
@@ -95,7 +95,7 @@
         form.reset();
       } catch (ex) {
         console.trace(ex);
-        M.toast({ 
+        M.toast({
           html: 'Beklenmedik bir hata oluştu, lütfen sayfayı yenileyip tekrar deneyin.',
           classes: 'red darken-3',
         });
@@ -131,7 +131,7 @@
 
     if (assetTypeEmpty || videoAsset || !fileMimeMatchesAssetMime) {
       fileInput.value = '';
-      fileInputText.value = ''; 
+      fileInputText.value = '';
       fileInputText.classList.remove('valid');
       return;
     }
@@ -223,7 +223,7 @@
     :global(svg.caret) {
       fill: #bbb !important;
     }
-    
+
     :global(.dropdown-content li.disabled span) {
       color: #868686;
     }
@@ -286,10 +286,11 @@
 
         <div class="row">
           <div class="input-field col s12">
-            <select 
-              bind:value={assetType} 
-              bind:this={assetTypeInput} 
+            <select
+              bind:value={assetType}
+              bind:this={assetTypeInput}
               name="assetType"
+              id="assetType"
               on:change={onAssetTypeChange}
               >
               <option value="" disabled="disabled" selected="selected">Seçiniz...</option>
@@ -302,7 +303,7 @@
               <option value="ses">Ses</option>
               <option value="video">Video</option>
             </select>
-            <label>Eser Türü</label>
+            <label for="assetType">Eser Türü</label>
           </div>
         </div>
 
@@ -331,7 +332,7 @@
             <div class="file-field input-field col s12">
               <div class="btn">
                 <span>Dosya</span>
-                <input 
+                <input
                   bind:this={fileInput}
                   on:change={(e) => {
                     if (e.target.files.length && e.target.files[0].size >= MAX_FILE_SIZE) {
@@ -341,8 +342,8 @@
                       e.target.setCustomValidity('');
                     }
                   }}
-                  type="file" 
-                  name="file" 
+                  type="file"
+                  name="file"
                   required="required"
                   accept={assetType === 'video' ? '' : MIME_TYPES[ASSET_MIMES[assetType]]} />
               </div>
@@ -353,7 +354,7 @@
           </div>
         {/if}
 
-        <div 
+        <div
           class="g-recaptcha"
           data-theme="{darkMode ? 'dark' : 'light'}"
           data-sitekey="6LcNcPYSAAAAACo24ipu3YWTwaLflO1gUDSg4ld1"

@@ -18,20 +18,13 @@ jobs:
       with:
         node-version: 14
 
-    - name: Cache node modules
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
+    - name: Install Yarn
+      run: npm install --global yarn
 
-    - run: npm install
+    - run: yarn install
       name: Install dependencies
 
-    - run: npm run build
+    - run: yarn build
       name: Generate client bundles
 
     - name: Compare service worker cache name
