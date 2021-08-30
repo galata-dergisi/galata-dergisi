@@ -32,13 +32,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-free@npm:^5.15.1":
-  version: 5.15.4
-  resolution: "@fortawesome/fontawesome-free@npm:5.15.4"
-  checksum: 32281c3df4075290d9a96dfc22f72fadb3da7055d4117e48d34046b8c98032a55fa260ae351b0af5d6f6fb57a2f5d79a4abe52af456da35195f7cb7dda27b4a2
-  languageName: node
-  linkType: hard
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1830,7 +1823,6 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "galata-dergisi@workspace:."
   dependencies:
-    "@fortawesome/fontawesome-free": ^5.15.1
     "@rollup/plugin-commonjs": ^11.0.2
     "@rollup/plugin-node-resolve": ^7.1.1
     autoprefixer: ^10.3.2

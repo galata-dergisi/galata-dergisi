@@ -35,7 +35,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {
           "packageLocation": "./",
           "packageDependencies": [
-            ["@fortawesome/fontawesome-free", "npm:5.15.4"],
             ["@rollup/plugin-commonjs", "virtual:9e08c56c71714df36b3a9b0ee8b675acde881b68ebc6f1a842dfdb8b2a9c16f9829fd409c01a22591b2bee3e6f2e40bebe8f37c78d8a1b15b973c474b636a417#npm:11.1.0"],
             ["@rollup/plugin-node-resolve", "virtual:9e08c56c71714df36b3a9b0ee8b675acde881b68ebc6f1a842dfdb8b2a9c16f9829fd409c01a22591b2bee3e6f2e40bebe8f37c78d8a1b15b973c474b636a417#npm:7.1.3"],
             ["autoprefixer", "virtual:9e08c56c71714df36b3a9b0ee8b675acde881b68ebc6f1a842dfdb8b2a9c16f9829fd409c01a22591b2bee3e6f2e40bebe8f37c78d8a1b15b973c474b636a417#npm:10.3.2"],
@@ -92,15 +91,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/helper-validator-identifier", "npm:7.14.9"],
             ["chalk", "npm:2.4.2"],
             ["js-tokens", "npm:4.0.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["@fortawesome/fontawesome-free", [
-        ["npm:5.15.4", {
-          "packageLocation": "./.yarn/unplugged/@fortawesome-fontawesome-free-npm-5.15.4-7752dc20e0/node_modules/@fortawesome/fontawesome-free/",
-          "packageDependencies": [
-            ["@fortawesome/fontawesome-free", "npm:5.15.4"]
           ],
           "linkType": "HARD",
         }]
@@ -2246,7 +2236,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["galata-dergisi", "workspace:."],
-            ["@fortawesome/fontawesome-free", "npm:5.15.4"],
             ["@rollup/plugin-commonjs", "virtual:9e08c56c71714df36b3a9b0ee8b675acde881b68ebc6f1a842dfdb8b2a9c16f9829fd409c01a22591b2bee3e6f2e40bebe8f37c78d8a1b15b973c474b636a417#npm:11.1.0"],
             ["@rollup/plugin-node-resolve", "virtual:9e08c56c71714df36b3a9b0ee8b675acde881b68ebc6f1a842dfdb8b2a9c16f9829fd409c01a22591b2bee3e6f2e40bebe8f37c78d8a1b15b973c474b636a417#npm:7.1.3"],
             ["autoprefixer", "virtual:9e08c56c71714df36b3a9b0ee8b675acde881b68ebc6f1a842dfdb8b2a9c16f9829fd409c01a22591b2bee3e6f2e40bebe8f37c78d8a1b15b973c474b636a417#npm:10.3.2"],

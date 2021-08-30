@@ -72,24 +72,6 @@ function initWebServer() {
   app.use(compression({ threshold: 0 }));
   app.use(contributionsController.getRouter());
   app.use(magazinesController.getRouter());
-
-  app.use('/fontawesome', async (req, res, next) => {
-    try {
-      const urlPath = req.url.replace(/^\/fontawesome/, '');
-      const filePath = require.resolve(`@fortawesome/fontawesome-free${urlPath}`);
-
-      try {
-        await fs.promises.access(filePath);
-      } catch (ex) {
-        next(404);
-      }
-
-      res.sendFile(filePath);
-    } catch (ex) {
-      next(ex);
-    }
-  });
-
   app.use(express.static(STATIC_PATH));
 
   server = app.listen(PORT, '0.0.0.0', (err) => {
