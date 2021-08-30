@@ -94,8 +94,9 @@ class MagazinesController {
 
     try {
       conn = await this.databasePool.getConnection();
-      const rows = await conn.query('SELECT id, publishDateText, thumbnailURL, '
-        + 'tableOfContents FROM magazines WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP()');
+      const rows = process.env.GALATA_DEV_MODE === '1'
+        ? await conn.query('SELECT * FROM magazines WHERE visible = 1')
+        : await conn.query('SELECT * FROM magazines WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP()');
       const result = {
         success: true,
         magazines: [],
@@ -131,9 +132,10 @@ class MagazinesController {
 
     try {
       conn = await this.databasePool.getConnection();
-      const rows = await conn.query('SELECT * FROM pages '
-        + 'WHERE magazineIndex = ? AND magazineIndex = (SELECT id FROM magazines '
-        + 'WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP() AND id = ?)', [
+      const subQuery = process.env.GALATA_DEV_MODE === '1'
+        ? 'SELECT id FROM magazines WHERE visible = 1 AND id = ?'
+        : 'SELECT id FROM magazines WHERE visible = 1 AND id = ? AND publishDate < CURRENT_TIMESTAMP()';
+      const rows = await conn.query(`SELECT * FROM pages WHERE magazineIndex = ? AND magazineIndex = (${subQuery})`, [
         +magazineIndex,
         +magazineIndex,
       ]);

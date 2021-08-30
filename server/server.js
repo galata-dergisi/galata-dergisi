@@ -142,7 +142,7 @@ function areServicesDisabled() {
 // Immediately invoked function: main()
 (async function main() {
   try {
-    if (!areServicesDisabled()) {
+    if (!areServicesDisabled() && process.env.GALATA_DEV_MODE !== '1') {
       await initServices();
     }
 
