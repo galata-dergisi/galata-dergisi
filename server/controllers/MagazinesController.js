@@ -131,7 +131,7 @@ class MagazinesController {
 
     try {
       conn = await this.databasePool.getConnection();
-      const rows = await conn.query('SELECT `content`, pageNumber FROM pages '
+      const rows = await conn.query('SELECT * FROM pages '
         + 'WHERE magazineIndex = ? AND magazineIndex = (SELECT id FROM magazines '
         + 'WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP() AND id = ?)', [
         +magazineIndex,
@@ -143,7 +143,11 @@ class MagazinesController {
       };
 
       for (const row of rows) {
-        result.pages[row.pageNumber] = row.content;
+        if (row.alternativeContentUntil && Date.now() < row.alternativeContentUntil) {
+          result.pages[row.pageNumber] = row.alternativeContent;
+        } else {
+          result.pages[row.pageNumber] = row.content;
+        }
       }
 
       res.status(200).json(result);
