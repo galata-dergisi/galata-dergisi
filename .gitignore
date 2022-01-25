@@ -83,3 +83,5 @@ client/drive-download-20210509T210338Z-001/
 .yarn/*
 !.yarn/cache
 !.yarn/releases
+
+/editor-panel/bundle*

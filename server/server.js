@@ -23,6 +23,7 @@ const mariadb = require('mariadb');
 const compression = require('compression');
 const MagazinesController = require('./controllers/MagazinesController.js');
 const ContributionsController = require('./controllers/ContributionsController.js');
+const EditorPanelController = require('./controllers/editor-panel/index.js');
 const GDriveSync = require('./services/GDriveSync.js');
 const Notifications = require('./services/Notifications.js');
 const Logger = require('./lib/Logger.js');
@@ -69,9 +70,12 @@ function initWebServer() {
     uploadsDir: UPLOADS_DIR,
   });
 
+  const editorPanelController = new EditorPanelController({ databasePool: pool });
+
   app.use(compression({ threshold: 0 }));
   app.use(contributionsController.getRouter());
   app.use(magazinesController.getRouter());
+  app.use(editorPanelController.getRouter());
   app.use(express.static(STATIC_PATH));
 
   server = app.listen(PORT, '0.0.0.0', (err) => {
