@@ -1707,7 +1707,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["json-stable-stringify-without-jsonify", "npm:1.0.1"],
             ["levn", "npm:0.3.0"],
             ["lodash", "npm:4.17.21"],
-            ["minimatch", "npm:3.0.4"],
+            ["minimatch", "npm:3.1.2"],
             ["mkdirp", "npm:0.5.5"],
             ["natural-compare", "npm:1.4.0"],
             ["optionator", "npm:0.8.3"],
@@ -1797,7 +1797,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["find-up", "npm:2.1.0"],
             ["has", "npm:1.0.3"],
             ["is-core-module", "npm:2.6.0"],
-            ["minimatch", "npm:3.0.4"],
+            ["minimatch", "npm:3.1.2"],
             ["object.values", "npm:1.1.4"],
             ["pkg-up", "npm:2.0.0"],
             ["read-pkg-up", "npm:3.0.0"],
@@ -2345,7 +2345,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["fs.realpath", "npm:1.0.0"],
             ["inflight", "npm:1.0.6"],
             ["inherits", "npm:2.0.4"],
-            ["minimatch", "npm:3.0.4"],
+            ["minimatch", "npm:3.1.2"],
             ["once", "npm:1.4.0"],
             ["path-is-absolute", "npm:1.0.1"]
           ],
@@ -3561,10 +3561,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["minimatch", [
-        ["npm:3.0.4", {
-          "packageLocation": "./.yarn/cache/minimatch-npm-3.0.4-6e76f51c23-66ac295f8a.zip/node_modules/minimatch/",
+        ["npm:3.1.2", {
+          "packageLocation": "./.yarn/cache/minimatch-npm-3.1.2-9405269906-c154e56640.zip/node_modules/minimatch/",
           "packageDependencies": [
-            ["minimatch", "npm:3.0.4"],
+            ["minimatch", "npm:3.1.2"],
             ["brace-expansion", "npm:1.1.11"]
           ],
           "linkType": "HARD",
@@ -3844,7 +3844,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["chokidar", "npm:3.5.2"],
             ["debug", "virtual:54917d1b63b8e91b52019e7dd3d737c3f7412f36112a684d3753e9f738a196d9ee6f3a0f35c37d2201cec30862274da8e022c2e789fda5159949392b58a393af#npm:3.2.7"],
             ["ignore-by-default", "npm:1.0.1"],
-            ["minimatch", "npm:3.0.4"],
+            ["minimatch", "npm:3.1.2"],
             ["pstree.remy", "npm:1.1.8"],
             ["semver", "npm:5.7.1"],
             ["supports-color", "npm:5.5.0"],
@@ -3922,7 +3922,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["chalk", "npm:2.4.2"],
             ["cross-spawn", "npm:6.0.5"],
             ["memorystream", "npm:0.3.1"],
-            ["minimatch", "npm:3.0.4"],
+            ["minimatch", "npm:3.1.2"],
             ["pidtree", "npm:0.3.1"],
             ["read-pkg", "npm:3.0.0"],
             ["shell-quote", "npm:1.7.2"],
