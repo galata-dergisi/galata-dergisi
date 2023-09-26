@@ -24,15 +24,6 @@
     "svelte": "^3.42.3",
     "svelte-preprocess": "^4.8.0"
   },
-  "dependencies": {
-    "compression": "^1.7.4",
-    "express": "^4.17.1",
-    "googleapis": "^62.0.0",
-    "mariadb": "^2.1.1",
-    "multer": "^1.4.2",
-    "nodemailer": "^6.4.6",
-    "uuid": "^8.0.0"
-  },
   "scripts": {
     "cloc": "cloc --exclude-dir=node_modules,public,sql-backups,uploads,utility-scripts,vendor,.vscode --force-lang=\"HTML\",svelte .",
     "server": "node server/server.js",
