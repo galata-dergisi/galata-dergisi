@@ -43,7 +43,8 @@
     "lint": "eslint \"client/**/*.js\" \"server/**/*.js\"",
     "start": "sirv public --single",
     "start:dev": "nodemon server/server.js --disable-services",
-    "start:dev-svc": "nodemon server/server.js"
+    "start:dev-svc": "nodemon server/server.js",
+    "update-browserlist": "npx update-browserslist-db@latest"
   },
   "nodemonConfig": {
     "ignore": [
