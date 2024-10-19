@@ -58,5 +58,6 @@
   "bugs": {
     "url": "https://github.com/mehmetb/galata-dergisi/issues"
   },
-  "homepage": "https://github.com/mehmetb/galata-dergisi#readme"
+  "homepage": "https://github.com/mehmetb/galata-dergisi#readme",
+  "packageManager": "yarn@4.5.1"
 }
