@@ -14,7 +14,7 @@ const production = !process.env.ROLLUP_WATCH;
 try {
 	if (!production) {
 		console.log("Removing 'public'...");
-		fs.rmdirSync('public', { recursive: true });
+		fs.rmSync('public', { recursive: true });
 	}
 } catch (ex) {
 	if (ex.code !== 'ENOENT') {
@@ -23,7 +23,6 @@ try {
 	}
 }
 
-fs.rmdirSync('public', { recursive: true });
 fs.mkdirSync('public/katkida-bulunun', { recursive: true });
 
 function getCommonPlugins({ cssPath }) {
