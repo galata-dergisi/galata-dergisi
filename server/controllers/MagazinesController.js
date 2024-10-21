@@ -18,7 +18,9 @@
 const fs = require('fs');
 const path = require('path');
 const { Router } = require('express');
+
 const Logger = require('../lib/Logger.js');
+const CustomError = require('../lib/CustomError.js');
 
 class MagazinesController {
   constructor(params) {
@@ -34,8 +36,46 @@ class MagazinesController {
     this.init();
   }
 
+  async #getMagazines() {
+    let conn;
+
+    try {
+      conn = await this.databasePool.getConnection();
+
+      const rows = process.env.GALATA_DEV_MODE === '1'
+        ? await conn.query('SELECT * FROM magazines WHERE visible = 1')
+        : await conn.query('SELECT * FROM magazines WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP()');
+
+      const result = {
+        success: true,
+        magazines: [],
+      };
+
+      for (const row of rows) {
+        const {
+          id, publishDateText, thumbnailURL, tableOfContents,
+        } = row;
+        result.magazines.push({
+          index: Number(id),
+          publishDateText,
+          thumbnailURL,
+          tableOfContents,
+        });
+      }
+
+      return result;
+    } catch (ex) {
+      Logger.trace(ex);
+      throw new CustomError('Something went wrong.');
+    } finally {
+      if (conn) conn.release();
+    }
+  }
+
   init() {
     this.router = Router();
+
+    this.router.get('/', (...args) => this.serveIndex(...args));
 
     // return list of the magazines
     this.router.get('/magazines', (...args) => this.getMagazines(...args));
@@ -56,15 +96,51 @@ class MagazinesController {
 
   async serveIndex(_, res) {
     try {
-      const stat = await fs.promises.stat(this.indexPath);
+      const [stat, magazines] = await Promise.all([
+        fs.promises.stat(this.indexPath),
+        this.#getMagazines(),
+      ]);
 
-      if (stat.mtime !== this.cache.lastModifiedDate) {
-        this.cache.fileContent = await fs.promises.readFile(this.indexPath, 'utf8');
+      // if (stat.mtime !== this.cache.lastModifiedDate) {
+        this.cache.fileContent = await fs.promises.readFile(path.join(__dirname, '../../client/pages/homepage/index.html'), 'utf8');
         this.cache.lastModifiedDate = stat.mtime;
-      }
+      // }
+
+      const allMagazines = magazines.magazines
+        .sort((a, b) => b.index - a.index)
+        .map((magazine) => {
+          const { index, publishDateText, thumbnailURL } = magazine;
+          const title = `${publishDateText} - Sayı ${index}`;
+          return `
+          <tr>
+            <td>
+              <a href="/dergiler/sayi${index}"><img src="${thumbnailURL}" alt="${title}" title="${title}" /></a>
+            </td>
+            <td><a href="/dergiler/sayi${index}">Sayı ${index}, ${publishDateText}</a></td>
+          </tr>`;
+        });
+
+      const noScriptContent = [
+        '<noscript>',
+        '<h1 align="center">Galata Dergisi - Tüm Sayılar</h1>',
+        '<main>',
+        '<table align="center">',
+        '<thead>',
+        '<tr>',
+        '<th scope="col">Kapak Görseli</th>',
+        '<th scope="col">Sayı ve Yayın Tarihi</th>',
+        '</tr>',
+        '</thead>',
+        '<tbody>',
+        ...allMagazines,
+        '</tbody>',
+        '</table>',
+        '</main>',
+        '</noscript>',
+      ];
 
       res.set('content-type', 'text/html; charset=UTF-8');
-      res.end(this.cache.fileContent);
+      res.end(this.cache.fileContent.replace('<!--NO_SCRIPT_CONTENT-->', noScriptContent.join('\n')));
     } catch (ex) {
       Logger.trace(ex);
       res.status(500).end('<h1>Internal Server Error</h1>');
@@ -89,41 +165,16 @@ class MagazinesController {
     res.sendFile(path.join(this.staticPath, 'audio', audioFilePath));
   }
 
-  async getMagazines(req, res) {
-    let conn;
+  getMagazines(_, res) {
+    return this.#getMagazines()
+      .then((result) => res.status(200).json(result))
+      .catch((error) => {
+        if (error instanceof CustomError) {
+          return res.status(200).json({ success: false, error: error.message });
+        }
 
-    try {
-      conn = await this.databasePool.getConnection();
-      const rows = process.env.GALATA_DEV_MODE === '1'
-        ? await conn.query('SELECT * FROM magazines WHERE visible = 1')
-        : await conn.query('SELECT * FROM magazines WHERE visible = 1 AND publishDate < CURRENT_TIMESTAMP()');
-      const result = {
-        success: true,
-        magazines: [],
-      };
-
-      for (const row of rows) {
-        const {
-          id, publishDateText, thumbnailURL, tableOfContents,
-        } = row;
-        result.magazines.push({
-          index: +id,
-          publishDateText,
-          thumbnailURL,
-          tableOfContents,
-        });
-      }
-
-      res.status(200).json(result);
-    } catch (ex) {
-      Logger.trace(ex);
-      res.status(200).json({
-        success: false,
-        error: 'Someting went wrong.',
+        res.status(200).json({ success: false, error: 'Something went wrong.' });
       });
-    } finally {
-      if (conn) conn.release();
-    }
   }
 
   async getMagazine(req, res) {
